@@ -1,0 +1,6 @@
+@Flavor_Vault_HostAddress = http://localhost:5224
+
+GET {{Flavor_Vault_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

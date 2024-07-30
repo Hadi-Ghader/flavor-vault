@@ -1,0 +1,130 @@
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+}
+
+.signupFormContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  border: 0.1rem solid #ccc;
+  background-color: white;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.3);
+  border-radius: 2rem;
+}
+.signupNameContainer,
+.signupEmailContainer,
+.signupPasswordContainer {
+  width: 30rem;
+}
+
+.signupNameInput,
+.signupEmailnput,
+.signupPasswordInput {
+  height: 3rem;
+  border: 0.15rem solid var(--main-green);
+  border-radius: 0.5rem;
+}
+
+.signupNameInput:focus,
+.signupEmailnput:focus,
+.signupPasswordInput:focus {
+  border: 0.15rem solid var(--accent-color);
+  box-shadow: 0 0 0 0.25 rem var(--accent-color);
+}
+
+.signupLabel {
+  color: var(--main-green);
+}
+
+.signupNameContainer:focus-within .signupLabel,
+.signupEmailContainer:focus-within .signupLabel,
+.signupPasswordContainer:focus-within .signupLabel {
+  color: var(--accent-color);
+}
+
+.signUpNameError,
+.signUpEmailError,
+.signUpPasswordError {
+  height: 3rem;
+  border: 0.15rem solid red;
+  border-radius: 0.5rem;
+}
+
+.signUpNameError:focus,
+.signUpEmailError:focus,
+.signUpPasswordError:focus {
+    box-shadow: none;
+    border: 0.15rem solid red;
+}
+
+.signupLabelError {
+    color: red;
+}
+
+.fromSubmitButton {
+  background-color: var(--main-green);
+  border: none;
+}
+
+.fromSubmitButton:hover {
+  background-color: var(--accent-color);
+  border: none;
+}
+
+.backgroundVideo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+.loginLink {
+  color: var(--main-green);
+}
+
+.loginLink:hover {
+  color: var(--accent-color);
+}
+
+@media (max-width: 768px) {
+  .signupFormContainer {
+    padding: 2rem;
+    border-radius: 2rem;
+  }
+
+  .signupNameInput,
+  .signupEmailnput,
+  .signupPasswordInput {
+    height: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .signupFormContainer {
+    padding: 2rem;
+    border-radius: 1rem;
+    width: 25rem;
+  }
+
+  .signupNameInput,
+  .signupEmailnput,
+  .signupPasswordInput {
+    height: 3rem;
+  }
+
+  .signupNameContainer,
+  .signupEmailContainer,
+  .signupPasswordContainer {
+    width: 100%;
+  }
+}
