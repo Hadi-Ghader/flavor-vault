@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { UserLogin } from "../../models/UserLogin";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import secureLocalStorage from "react-secure-storage";
 
 import Button from "react-bootstrap/Button";
@@ -135,6 +135,10 @@ const Login: React.FC = () => {
             ref={inputPasswordRef}
           />
         </Form.Group>
+
+        <Link to="/SignUp" className={classes.signupLink}>
+          Don't have an account? Click here to sign up.
+        </Link>
 
         <Button
           className={classes.fromSubmitButton}

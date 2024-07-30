@@ -65,6 +65,14 @@ body {
   border: 0.15rem solid red;
 }
 
+.signupLink {
+  color: var(--main-green);
+}
+
+.signupLink:hover {
+  color: var(--accent-color);
+}
+
 .loginLabelError {
   color: red;
 }

@@ -6,7 +6,7 @@ namespace Flavor_Vault.Infrastructure.Repositories
     {
         public Task<bool> EmailExistsAsync(string email);
         public Task<User> GetUserByEmailAsync(string email);
-        public Task UserSignUpAsync(User user);
+        public Task<User> UserSignUpAsync(User user);
 
     }
 }
