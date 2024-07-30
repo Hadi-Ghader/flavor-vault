@@ -7,7 +7,7 @@ body {
   background-color: #f0f0f0;
 }
 
-.signupFormContainer {
+.loginFormContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -19,53 +19,53 @@ body {
   border-radius: 2rem;
 }
 
-.signupNameContainer,
-.signupEmailContainer,
-.signupPasswordContainer {
+.loginNameContainer,
+.loginEmailContainer,
+.loginPasswordContainer {
   width: 30rem;
 }
 
-.signupNameInput,
-.signupEmailnput,
-.signupPasswordInput {
+.loginNameInput,
+.loginEmailnput,
+.loginPasswordInput {
   height: 3rem;
   border: 0.15rem solid var(--main-green);
   border-radius: 0.5rem;
 }
 
-.signupNameInput:focus,
-.signupEmailnput:focus,
-.signupPasswordInput:focus {
+.loginNameInput:focus,
+.loginEmailnput:focus,
+.loginPasswordInput:focus {
   border: 0.15rem solid var(--accent-color);
   box-shadow: 0 0 0 0.25 rem var(--accent-color);
 }
 
-.signupLabel {
+.loginLabel {
   color: var(--main-green);
 }
 
-.signupNameContainer:focus-within .signupLabel,
-.signupEmailContainer:focus-within .signupLabel,
-.signupPasswordContainer:focus-within .signupLabel {
+.loginNameContainer:focus-within .loginLabel,
+.loginEmailContainer:focus-within .loginLabel,
+.loginPasswordContainer:focus-within .loginLabel {
   color: var(--accent-color);
 }
 
-.signUpNameError,
-.signUpEmailError,
-.signUpPasswordError {
+.loginNameError,
+.loginEmailError,
+.loginPasswordError {
   height: 3rem;
   border: 0.15rem solid red;
   border-radius: 0.5rem;
 }
 
-.signUpNameError:focus,
-.signUpEmailError:focus,
-.signUpPasswordError:focus {
+.loginNameError:focus,
+.loginEmailError:focus,
+.loginPasswordError:focus {
   box-shadow: none;
   border: 0.15rem solid red;
 }
 
-.signupLabelError {
+.loginLabelError {
   color: red;
 }
 
@@ -89,43 +89,35 @@ body {
   z-index: -1;
 }
 
-.loginLink {
-  color: var(--main-green);
-}
-
-.loginLink:hover {
-  color: var(--accent-color);
-}
-
 @media (max-width: 768px) {
-  .signupFormContainer {
+  .loginFormContainer {
     padding: 2rem;
     border-radius: 2rem;
   }
 
-  .signupNameInput,
-  .signupEmailnput,
-  .signupPasswordInput {
+  .loginNameInput,
+  .loginEmailnput,
+  .loginPasswordInput {
     height: 2.5rem;
   }
 }
 
 @media (max-width: 480px) {
-  .signupFormContainer {
+  .loginFormContainer {
     padding: 2rem;
     border-radius: 1rem;
     width: 25rem;
   }
 
-  .signupNameInput,
-  .signupEmailnput,
-  .signupPasswordInput {
+  .loginNameInput,
+  .loginEmailnput,
+  .loginPasswordInput {
     height: 3rem;
   }
 
-  .signupNameContainer,
-  .signupEmailContainer,
-  .signupPasswordContainer {
+  .loginNameContainer,
+  .loginEmailContainer,
+  .loginPasswordContainer {
     width: 100%;
   }
 }

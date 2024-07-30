@@ -1,4 +1,5 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import secureLocalStorage from "react-secure-storage";
 
 import Button from "react-bootstrap/Button";
@@ -7,9 +8,9 @@ import Alert from "react-bootstrap/Alert";
 
 import classes from "./SignUp.module.css";
 import { UserSignUp } from "../../models/UserSignUp";
-import { Link, useNavigate } from "react-router-dom";
 
-import instance from "../../Helper/AxiosInstance";
+
+import instance from "../../helper/AxiosInstance";
 
 const SignUp: React.FC = () => {
   const [alert, setAlert] = useState<string | null>(null);
@@ -20,9 +21,11 @@ const SignUp: React.FC = () => {
   const inputEmailRef = useRef<HTMLInputElement>(null);
   const inputPasswordRef = useRef<HTMLInputElement>(null);
 
-  if (secureLocalStorage.getItem("token")) {
-    navigate("/");
-  }
+  useEffect(() => {
+    if (secureLocalStorage.getItem("token")) {
+      navigate("/");
+    }
+  }, [navigate]);
 
   const postUser = useCallback(
     (user: UserSignUp) => {
@@ -48,6 +51,7 @@ const SignUp: React.FC = () => {
 
       const emailPattern =
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
       let name = inputNameRef.current!.value;
       let email = inputEmailRef.current!.value;
       let password = inputPasswordRef.current!.value;
@@ -76,7 +80,6 @@ const SignUp: React.FC = () => {
         email,
         password,
       };
-      console.log(user);
 
       postUser(user);
     },
