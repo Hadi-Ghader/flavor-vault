@@ -4,11 +4,13 @@ using Flavor_Vault.Core.Entities;
 
 namespace Flavor_Vault.Application.Mappings
 {
-    public class UserMapper : Profile
+    public class MappingProfile : Profile
     {
-        public UserMapper()
+        public MappingProfile()
         {
             CreateMap<UserSignUpDTO, User>().ReverseMap();
+            CreateMap<RecipeDTO, Recipe>().ReverseMap();
+            CreateMap<CategoryDTO, Category>().ReverseMap();
         }
     }
 }

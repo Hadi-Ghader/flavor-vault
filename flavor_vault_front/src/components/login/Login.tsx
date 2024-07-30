@@ -28,7 +28,7 @@ const Login: React.FC = () => {
   const postUser = useCallback(
     (user: UserLogin) => {
       instance
-        .post("User/Login", user)
+        .post("User/login", user)
         .then((response) => {
           const { token } = response.data;
           secureLocalStorage.setItem("token", token);
@@ -136,7 +136,7 @@ const Login: React.FC = () => {
           />
         </Form.Group>
 
-        <Link to="/SignUp" className={classes.signupLink}>
+        <Link to="/signup" className={classes.signupLink}>
           Don't have an account? Click here to sign up.
         </Link>
 
