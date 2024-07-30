@@ -50,8 +50,8 @@ namespace Flavor_Vault.Application.Services
 
             try
             {
-                await _userRepository.UserSignUpAsync(user);
-                var token = _jwtTokenGenerator.GenerateToken(user.Email);
+                var newUser = await _userRepository.UserSignUpAsync(user);
+                var token = _jwtTokenGenerator.GenerateToken(newUser);
                 return token;
             }
             catch (Exception exception)
@@ -69,7 +69,7 @@ namespace Flavor_Vault.Application.Services
             {
                 throw new UnauthorizedAccessException("Invalid credentials");
             }
-            var token = _jwtTokenGenerator.GenerateToken(user.Email);
+            var token = _jwtTokenGenerator.GenerateToken(user);
             return token;
         }
     }

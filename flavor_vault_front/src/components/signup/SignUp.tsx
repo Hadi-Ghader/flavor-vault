@@ -171,7 +171,7 @@ const SignUp: React.FC = () => {
         </Form.Group>
 
         <Link to="/Login" className={classes.loginLink}>
-          Already have an account? Login
+          Already have an account? Login.
         </Link>
 
         <Button

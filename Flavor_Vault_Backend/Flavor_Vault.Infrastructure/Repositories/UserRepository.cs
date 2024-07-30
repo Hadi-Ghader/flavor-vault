@@ -46,16 +46,19 @@ namespace Flavor_Vault.Infrastructure.Repositories
             return user;
         }
 
-        public async Task UserSignUpAsync(User user)
+        public async Task<User> UserSignUpAsync(User user)
         {
             using var dbConnection = Connection;
-            const string query = @"INSERT INTO public.""users""(""email"", ""password"", ""name"")  VALUES(@Email, @PasswordHash, @Name) ";
+            const string query = @"INSERT INTO public.""users""(""email"", ""password"", ""name"")  VALUES(@Email, @PasswordHash, @Name) RETURNING ""id"", ""name"", ""email""; ";
 
-            await dbConnection.ExecuteAsync(query, new {
+            var newUser = await dbConnection.QuerySingleOrDefaultAsync<User>(query, new
+            {
                 user.Email,
                 user.PasswordHash,
                 user.Name
             });
+
+            return newUser!;
         }
     }
 }
