@@ -15,7 +15,7 @@ namespace Flavor_Vault.Controllers
             _userService = userService;
         }
 
-        [HttpPost("SignUp")]
+        [HttpPost("signup")]
         public async Task<IActionResult> UserSignUpAsync([FromBody] UserSignUpDTO useSignUpDTO)
         {
             if (useSignUpDTO == null)
@@ -34,7 +34,7 @@ namespace Flavor_Vault.Controllers
             }
         }
 
-        [HttpPost("Login")]
+        [HttpPost("login")]
         public async Task<IActionResult> UserLoginAsync([FromBody] UserLoginDTO userLoginDTO)
         {
             try

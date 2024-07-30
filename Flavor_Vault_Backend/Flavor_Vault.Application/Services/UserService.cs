@@ -8,13 +8,13 @@ namespace Flavor_Vault.Application.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly IMapper _userMapper;
+        private readonly IMapper _mapper;
         private readonly JwtTokenGenerator _jwtTokenGenerator;
 
         public UserService(IUserRepository userRepository, IMapper userMapper, JwtTokenGenerator jwtTokenGenerator)
         {
             _userRepository = userRepository;
-            _userMapper = userMapper;
+            _mapper = userMapper;
             _jwtTokenGenerator = jwtTokenGenerator;
         }
 
@@ -44,7 +44,7 @@ namespace Flavor_Vault.Application.Services
 
         public async Task<string> UserSignUpAsync(UserSignUpDTO useSignUpDTO)
         {
-            var user = _userMapper.Map<User>(useSignUpDTO);
+            var user = _mapper.Map<User>(useSignUpDTO);
 
             user.SetPassword(useSignUpDTO.Password);
 

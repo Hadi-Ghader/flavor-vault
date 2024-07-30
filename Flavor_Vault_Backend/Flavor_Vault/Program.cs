@@ -56,9 +56,15 @@ namespace Flavor_Vault
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddAutoMapper(typeof(UserMapper));
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
+
             builder.Services.AddScoped<IUserRepository, UserRepository>(provider => new UserRepository(connectionString!));
+            builder.Services.AddScoped<IRecipeRepository, RecipeRepository>(provider => new RecipeRepository(connectionString!));
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>(provider => new CategoryRepository(connectionString!));
+
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IRecipeService, RecipeService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
 
             var app = builder.Build();
 
