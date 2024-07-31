@@ -1,0 +1,123 @@
+.backgroundImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+.recipeFormContainer {
+  background-color: white;
+  height: 50%;
+  width: 40rem;
+  border-radius: 2rem;
+  padding: 3rem;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.3);
+}
+
+.recipeTitleInput {
+  height: 3rem;
+  border: 0.15rem solid var(--main-green);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.recipeTitleInput:focus {
+  border: 0.15rem solid var(--accent-color);
+  box-shadow: 0 0 0 0.25 rem var(--accent-color);
+}
+
+.recipeBodyInput {
+  border: 0.15rem solid var(--main-green);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.recipeBodyInput:focus {
+  border: 0.15rem solid var(--accent-color);
+  box-shadow: 0 0 0 0.25 rem var(--accent-color);
+}
+
+.recipeLabel {
+  color: var(--main-green);
+}
+
+.recipeTitleInputContainer:focus-within .recipeLabel,
+.recipeBodyInputContainer:focus-within .recipeLabel {
+  color: var(--accent-color);
+}
+
+.categoryDropDown {
+  background-color: var(--main-green);
+  border: none;
+  margin-bottom: 1rem;
+}
+
+.categoryDropDown:hover {
+  background-color: var(--accent-color);
+  border: none;
+}
+
+.categoryDropDown:focus,
+.categoryDropDown:active,
+.categoryDropDown:hover,
+.categoryDropDown:focus-visible {
+  background-color: var(--main-green);
+  border: none;
+  box-shadow: none;
+}
+
+.categoryDropDown:first-child:active {
+  background-color: var(--accent-color);
+  border: none;
+  box-shadow: none;
+}
+
+.categoryDropDown .show {
+  background-color: var(--main-green);
+}
+
+.categoryDropDownItem:hover,
+.categoryDropDownItem:active {
+  color: var(--side-color);
+  background-color: var(--main-green);
+}
+
+.formSubmitButton {
+  background-color: var(--main-green);
+  border: none;
+}
+
+.formSubmitButton:hover {
+  background-color: var(--accent-color);
+  border: none;
+}
+
+@media (max-width: 768px) {
+  .recipeFormContainer {
+    padding: 2rem;
+    border-radius: 2rem;
+  }
+
+  .recipeTitleInput {
+    height: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .recipeFormContainer {
+    padding: 2rem;
+    border-radius: 1rem;
+    width: 25rem;
+  }
+
+  .recipeTitleInput {
+    height: 2rem;
+  }
+
+  .recipeTitleInput {
+    width: 100%;
+  }
+}
