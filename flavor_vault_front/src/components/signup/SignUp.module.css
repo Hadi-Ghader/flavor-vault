@@ -69,12 +69,12 @@ body {
   color: red;
 }
 
-.fromSubmitButton {
+.formSubmitButton {
   background-color: var(--main-green);
   border: none;
 }
 
-.fromSubmitButton:hover {
+.formSubmitButton:hover {
   background-color: var(--accent-color);
   border: none;
 }

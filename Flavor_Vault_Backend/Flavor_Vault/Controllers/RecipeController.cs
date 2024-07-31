@@ -1,9 +1,11 @@
 ﻿using Flavor_Vault.Application.Services;
 using Flavor_Vault.Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Flavor_Vault.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class RecipeController : Controller
@@ -14,6 +16,8 @@ namespace Flavor_Vault.Controllers
         {
             _recipeService = recipeService;
         }
+
+
 
         [HttpPost("uploadrecipe")]
         public async Task<IActionResult> InsertRecipeAsync([FromBody] RecipeDTO recipeDTO)

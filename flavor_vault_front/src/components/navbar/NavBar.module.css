@@ -1,0 +1,26 @@
+.navbarContainer {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  background-color: var(--main-green);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+  margin-left: auto;
+}
+
+.navItem {
+  color: var(--side-color);
+}
+
+.navItem:hover {
+    color: var(--accent-color);
+}
+
+.mainNavItem {
+    color: var(--side-color);
+    font-weight: bold;
+}
+.mainNavItem:hover {
+    color: var(--accent-color);
+}

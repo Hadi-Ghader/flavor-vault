@@ -37,8 +37,8 @@ const SignUp: React.FC = () => {
 
           navigate("/");
         })
-        .catch((error) => {
-          const { details } = error.response.data;
+        .catch((exception) => {
+          const { details } = exception.response.data;
           setAlert(details);
         });
     },
@@ -175,7 +175,7 @@ const SignUp: React.FC = () => {
         </Link>
 
         <Button
-          className={classes.fromSubmitButton}
+          className={classes.formSubmitButton}
           type="button"
           onClick={handleSignUpSubmit}
         >
