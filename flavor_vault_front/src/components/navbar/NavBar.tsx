@@ -22,7 +22,7 @@ const NavBar: React.FC = () => {
     secureLocalStorage.clear();
     setToken(null);
     navigate("/");
-  }, []);
+  }, [navigate]);
 
   return (
     <Navbar expand="lg" className={classes.navbarContainer}>

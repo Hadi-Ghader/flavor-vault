@@ -33,7 +33,7 @@ const RecipeUpload: React.FC = () => {
 
   const inputTitleRef = useRef<HTMLInputElement>(null);
   const inputBodyRef = useRef<HTMLTextAreaElement>(null);
-  const getAllCategories = () => {
+  const getAllCategories = useCallback(() => {
     instance
       .get<Category[]>("/Category/getallcategories")
       .then((response) => {
@@ -42,7 +42,7 @@ const RecipeUpload: React.FC = () => {
       .catch((error) => {
         console.error("Error fetching categories", error);
       });
-  };
+  }, []);
 
   useEffect(() => {
     const token = secureLocalStorage.getItem("token") as string;
@@ -60,7 +60,7 @@ const RecipeUpload: React.FC = () => {
       }
       setIsLoading(false);
     }
-  }, []);
+  }, [getAllCategories]);
 
   const handleSelectedCategory = useCallback(
     (categoryId: number, categoryName: string) => {
