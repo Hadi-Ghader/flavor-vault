@@ -11,6 +11,7 @@ namespace Flavor_Vault.Application.Mappings
             CreateMap<UserSignUpDTO, User>().ReverseMap();
             CreateMap<RecipeDTO, Recipe>().ReverseMap();
             CreateMap<CategoryDTO, Category>().ReverseMap();
+            CreateMap<FavoriteRecipeByUserDTO, FavoriteRecipeByUser>().ReverseMap();
         }
     }
 }
