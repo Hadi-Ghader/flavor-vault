@@ -6,6 +6,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Dropdown from "react-bootstrap/Dropdown";
 import Alert from "react-bootstrap/Alert";
+import Spinner from "react-bootstrap/Spinner";
 
 import classes from "./RecipeUpload.module.css";
 import NavBar from "../navbar/NavBar";
@@ -18,6 +19,7 @@ import NoTokenComponent from "../notokencomponent/NoTokenComponent";
 
 const RecipeUpload: React.FC = () => {
   const [hasToken, setHasToken] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category>({
     id: 0,
@@ -31,19 +33,18 @@ const RecipeUpload: React.FC = () => {
 
   const inputTitleRef = useRef<HTMLInputElement>(null);
   const inputBodyRef = useRef<HTMLTextAreaElement>(null);
+  const getAllCategories = () => {
+    instance
+      .get<Category[]>("/Category/getallcategories")
+      .then((response) => {
+        setCategories(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching categories", error);
+      });
+  };
 
   useEffect(() => {
-    const getAllCategories = () => {
-      instance
-        .get<Category[]>("/Category/getallcategories")
-        .then((response) => {
-          setCategories(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching categories", error);
-        });
-    };
-
     const token = secureLocalStorage.getItem("token") as string;
 
     if (typeof token === "string") {
@@ -57,6 +58,7 @@ const RecipeUpload: React.FC = () => {
       } catch (error) {
         console.error("Invalid token:", error);
       }
+      setIsLoading(false);
     }
   }, []);
 
@@ -100,6 +102,16 @@ const RecipeUpload: React.FC = () => {
         setResponse({ type: "danger", message: details });
       });
   }, [selectedCategory.id, userId]);
+
+  if (isLoading) {
+    return (
+      <Spinner
+        className={classes.loading}
+        animation="border"
+        role="status"
+      ></Spinner>
+    );
+  }
 
   return (
     <div>
