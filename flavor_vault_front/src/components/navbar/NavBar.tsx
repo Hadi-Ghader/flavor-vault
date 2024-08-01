@@ -27,12 +27,15 @@ const NavBar: React.FC = () => {
   return (
     <Navbar expand="lg" className={classes.navbarContainer}>
       <Container>
-        <Navbar.Brand className={classes.mainNavItem} href="/">
+        <Navbar.Brand className={classes.mainNavItem}>
           Flavour Vault
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
+          <Nav.Link href="/" className={classes.navItem}>
+              Home Page
+            </Nav.Link>
             <Nav.Link href="/recipeupload" className={classes.navItem}>
               Upload Recipe
             </Nav.Link>

@@ -4,8 +4,8 @@ import "./App.css";
 
 import SignUp from "./components/signup/SignUp";
 import Login from "./components/login/Login";
-import LandingPage from "./components/landingPage/LandingPage";
-import RecipeUpload from "./components/RecipeUpload/RecipeUpload";
+import LandingPage from "./components/landingpage/LandingPage";
+import RecipeUpload from "./components/recipeupload/RecipeUpload";
 
 function App() {
   return (
