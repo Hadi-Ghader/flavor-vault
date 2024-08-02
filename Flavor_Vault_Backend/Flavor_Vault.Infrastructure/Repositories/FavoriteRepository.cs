@@ -19,7 +19,7 @@ namespace Flavor_Vault.Infrastructure.Repositories
         public async Task<IEnumerable<FavoriteRecipeByUser>> GetFavoritesForUserAsync(int userId)
         {
             var dbconnection = Connection;
-            const string query = @" SELECT f.id, r.id as recipe_id, r.title, r.body 
+            const string query = @" SELECT f.id, r.id as recipeId, r.title, r.body 
                                     FROM public.""favorites"" as f
                                     JOIN public.""users"" as u ON f.user_id = u.id
                                     JOIN public.""recipes"" as r ON f.recipe_id = r.id

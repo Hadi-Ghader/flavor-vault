@@ -15,13 +15,21 @@ namespace Flavor_Vault.Application.Services
             _mapper = recipeMapper;
         }
 
+        public async Task<RecipeDTO> GetRecipeByIdAsync(int id)
+        {
+            var recipe = await _recipeRepository.GetRecipeByIdAsync(id);
+            var recipeDTO = _mapper.Map<RecipeDTO>(recipe);
+
+            return recipeDTO;
+        }
+
         public void ValidateRecipe(RecipeDTO recipeDTO)
         {
             if (string.IsNullOrWhiteSpace(recipeDTO.Title))
             {
                 throw new ArgumentException("Title is required.");
             }
-            if (string.IsNullOrWhiteSpace(recipeDTO.Body))
+            if (recipeDTO.Body.All(string.IsNullOrWhiteSpace))
             {
                 throw new ArgumentException("Body is required.");
             }
@@ -42,6 +50,14 @@ namespace Flavor_Vault.Application.Services
             var recipe = _mapper.Map<Recipe>(recipeDTO);
 
             await _recipeRepository.InsertRecipeAsync(recipe);
+        }
+
+        public async Task<IEnumerable<RecipeDTO>> SearchRecipesAsync(string query)
+        {
+            var recipes = await _recipeRepository.SearchRecipesAsync(query);
+            var recipesDTO = _mapper.Map<IEnumerable<RecipeDTO>>(recipes);
+
+            return recipesDTO;
         }
     }
 }

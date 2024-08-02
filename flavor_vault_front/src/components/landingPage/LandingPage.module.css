@@ -1,0 +1,160 @@
+.mainContainer {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 1rem;
+}
+
+.heading {
+  top: 0;
+  display: flex;
+  align-items: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  color: var(--main-green);
+}
+
+.icon {
+  display: inline;
+  font-size: 1.5rem;
+  margin-left: 0.5rem;
+}
+
+.cardsContainer {
+  margin: 1rem;
+  width: 100%;
+}
+
+.card {
+  width: 20rem;
+  background-color: var(--accent-color);
+  color: var(--main-green);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.5);
+}
+
+.searchBar {
+  width: 40rem;
+  height: 5vh;
+  background-color: var(--main-green);
+  color: var(--side-color);
+  margin-top: 5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.3);
+}
+
+.searchBar:focus,
+.searchBar:focus-visible {
+  background-color: var(--main-green);
+  box-shadow: none;
+  border-color: var(--accent-color);
+  color: var(--side-color);
+}
+
+.searchBar::placeholder {
+  color: var(--side-color);
+}
+
+.loading {
+  color: var(--main-green);
+}
+
+.modalContainer {
+  max-width: 80%;
+}
+
+.closeButton {
+  color: var(--side-color);
+  background-color: var(--main-green);
+  border: none;
+}
+
+.closeButton:hover {
+  color: var(--side-color);
+  background-color: var(--accent-color);
+  border: none;
+}
+
+.recipeButton {
+  background-color: var(--main-green);
+  color: var(--side-color);
+  border: none;
+}
+
+.recipeButton:hover {
+  background-color: var(--side-color);
+  color: var(--main-green);
+  border: none;
+}
+
+@media (max-width: 1800px) {
+  .mainContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .card {
+    width: 100%;
+    margin-right: 2rem;
+    margin-bottom: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .card {
+    width: 100%;
+    margin-right: 2rem;
+    margin-bottom: 2rem;
+  }
+  .searchBar {
+    width: 30rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .card {
+    width: 100%;
+    margin-bottom: 2rem;
+  }
+  .searchBar {
+    width: 25rem;
+  }
+  .mainContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .modalContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 5rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .card {
+    width: 100%;
+    margin-bottom: 2rem;
+  }
+  .searchBar {
+    width: 15rem;
+  }
+  .mainContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+}
