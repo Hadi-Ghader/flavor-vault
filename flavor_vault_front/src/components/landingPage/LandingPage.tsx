@@ -29,9 +29,10 @@ const LandingPage: React.FC = () => {
 
   const handleSearch = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const query = searchRef.current!.value;
     if (searchRef.current!.value !== null) {
       instanceJwt
-        .get(`Recipe/search?query=${searchRef.current}`)
+        .get(`Recipe/search?query=${query}`)
         .then((response) => {
           setSearchResults(response.data);
           showModal(true);
@@ -93,7 +94,7 @@ const LandingPage: React.FC = () => {
         dialogClassName={classes.modalContainer}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Search Results</Modal.Title>
+          <Modal.Title className={classes.searchTitle}>Search Results</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {searchResults.length > 0 ? (
@@ -128,7 +129,7 @@ const LandingPage: React.FC = () => {
               return null;
             })
           ) : (
-            <p>No results found.</p>
+            <p className={classes.noResultText}>No results found.</p>
           )}
         </Modal.Body>
         <Modal.Footer>
