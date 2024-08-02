@@ -22,5 +22,6 @@
     font-weight: bold;
 }
 .mainNavItem:hover {
-    color: var(--accent-color);
+    color: var(--side-color);
+    cursor: default;
 }

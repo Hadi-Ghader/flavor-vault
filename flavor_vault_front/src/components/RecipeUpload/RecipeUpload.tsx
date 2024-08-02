@@ -25,7 +25,7 @@ const RecipeUpload: React.FC = () => {
     id: 0,
     name: "Selected Category",
   });
-  const [userId, setUserId] = useState<number>(0);
+  const userId = useRef<number>();
   const [response, setResponse] = useState<{
     type: string;
     message: string;
@@ -53,7 +53,7 @@ const RecipeUpload: React.FC = () => {
 
         const decodedToken: UserToken = jwtDecode(token);
 
-        setUserId(decodedToken.nameid);
+        userId.current = decodedToken.nameid;
         getAllCategories();
       } catch (error) {
         console.error("Invalid token:", error);
@@ -84,10 +84,13 @@ const RecipeUpload: React.FC = () => {
       return;
     }
 
+    const bodyText = inputBodyRef.current!.value;
+    const bodyList = bodyText.split('\n');
+
     let recipe: Recipe = {
       title: inputTitleRef.current!.value,
-      body: inputBodyRef.current!.value,
-      userId: userId,
+      body: bodyList,
+      userId: userId.current!,
       categoryId: selectedCategory.id,
     };
 

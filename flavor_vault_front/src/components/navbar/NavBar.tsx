@@ -21,7 +21,7 @@ const NavBar: React.FC = () => {
   const handleSignOut = useCallback(() => {
     secureLocalStorage.clear();
     setToken(null);
-    navigate("/");
+    navigate("/login");
   }, [navigate]);
 
   return (
