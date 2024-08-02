@@ -45,16 +45,16 @@ namespace Flavor_Vault.Infrastructure.Repositories
         {
             using var dbconnection = Connection;
             const string query = @"SELECT * FROM public.""recipes""
-                                        WHERE title ILIKE '%recipe%' 
+                                        WHERE title ILIKE @Query 
                                         OR EXISTS (
                                             SELECT * 
                                             FROM unnest(body) AS r 
-                                            WHERE r ILIKE '%recipe%'
+                                            WHERE r ILIKE @Query
                                         );";
 
             var result = await dbconnection.QueryAsync<Recipe>(query, new
             {
-                Query = $"%{query}%"
+                Query = $"%{searchQuery}%"
             });
 
             return result;
