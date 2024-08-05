@@ -9,7 +9,7 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import Alert from 'react-bootstrap/Alert';
+import Alert from "react-bootstrap/Alert";
 import { BsStar } from "react-icons/bs";
 
 import classes from "./LandingPage.module.css";
@@ -19,6 +19,7 @@ import { UserFavorite } from "../../models/UserFavorite";
 import { UserToken } from "../../models/UserToken";
 import { Spinner } from "react-bootstrap";
 import { Recipe } from "../../models/Recipe";
+import { useNavigate } from "react-router-dom";
 
 const LandingPage: React.FC = () => {
   const Id = useRef<number | null>(null);
@@ -31,6 +32,12 @@ const LandingPage: React.FC = () => {
     type: string;
     message: string;
   } | null>(null);
+
+  const navigate = useNavigate();
+
+  const handleGoToRecipe = useCallback((id: number) => {
+    navigate(`/recipe/${id}`)
+  }, []);
 
   const handleSearch = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -64,8 +71,11 @@ const LandingPage: React.FC = () => {
         .catch((exception) => {
           console.log(exception);
         });
-    }else {
-      setAlert({type: "danger", message: "Please login to view your favorites!"});
+    } else {
+      setAlert({
+        type: "danger",
+        message: "Please login to view your favorites!",
+      });
     }
   }, []);
 
@@ -130,7 +140,12 @@ const LandingPage: React.FC = () => {
                                   </span>
                                 ))}
                               </Card.Text>
-                              <Button className={classes.recipeButton}>
+                              <Button
+                                onClick={() => {
+                                  handleGoToRecipe(result.id!);
+                                }}
+                                className={classes.recipeButton}
+                              >
                                 Go to recipe
                               </Button>
                             </Card.Body>
@@ -172,7 +187,11 @@ const LandingPage: React.FC = () => {
           </div>
         </h2>
       ) : (
-        alert && <Alert className={classes.alert} variant={alert.type}>{alert.message}</Alert>
+        alert && (
+          <Alert className={classes.alert} variant={alert.type}>
+            {alert.message}
+          </Alert>
+        )
       )}
 
       <Container className={classes.cardsContainer}>
@@ -196,6 +215,14 @@ const LandingPage: React.FC = () => {
                                 </span>
                               ))}
                             </Card.Text>
+                            <Button
+                              onClick={() => {
+                                handleGoToRecipe(favorites.id!);
+                              }}
+                              className={classes.recipeButton}
+                            >
+                              Go to recipe
+                            </Button>
                           </Card.Body>
                         </Card>
                       </Col>
