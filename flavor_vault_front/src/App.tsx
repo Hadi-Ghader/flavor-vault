@@ -17,7 +17,7 @@ function App() {
           <Route path="recipeupload" element={<RecipeUpload />} />
           <Route path="signup" element={<SignUp />} />
           <Route path="login" element={<Login />} />
-          <Route path="recipe/:id" element={<RecipeDetails />} />
+          <Route path="recipe/:recipeId" element={<RecipeDetails />} />
         </Routes>
       </div>
     </BrowserRouter>

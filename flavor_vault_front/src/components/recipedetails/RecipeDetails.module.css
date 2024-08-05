@@ -1,0 +1,30 @@
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.cardContainer {
+  display: flex;
+  flex-direction: row;
+  background-color: var(--accent-color);
+  color: var(--main-green);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.5);
+}
+
+.image {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+
+.likeButton {
+    background-color: var(--main-green);
+    color: var(--accent-color);
+    border: none;
+}
+
+.likeButton:active, .likeButton:focus-within, .likeButton:focus, .likeButton:hover {
+    background-color: var(--side-color) !important;
+    color: var(--main-green) !important;
+    border: none;
+}

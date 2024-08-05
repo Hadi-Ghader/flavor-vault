@@ -27,7 +27,7 @@ const RecipeUpload: React.FC = () => {
   });
   const userId = useRef<number>();
   const [response, setResponse] = useState<{
-    type: string;
+    variant: string;
     message: string;
   } | null>(null);
 
@@ -41,7 +41,7 @@ const RecipeUpload: React.FC = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching categories", error);
+        setResponse({variant: "danger", message: `${error.response.data}`});
       });
   }, []);
 
@@ -81,7 +81,7 @@ const RecipeUpload: React.FC = () => {
       if (inputBodyRef.current!.value === "") message += "Body ";
       if (selectedCategory.id === 0) message += "Category ";
 
-      setResponse({ type: "danger", message: message.trim() });
+      setResponse({ variant: "danger", message: message.trim() });
       return;
     }
 
@@ -98,12 +98,12 @@ const RecipeUpload: React.FC = () => {
     instanceJwt
       .post("Recipe/uploadrecipe", recipe)
       .then((response) => {
-        setResponse({ type: "success", message: response.data });
+        setResponse({ variant: "success", message: response.data });
       })
       .catch((exception) => {
         console.log(exception);
         const { details } = exception.response.data;
-        setResponse({ type: "danger", message: details });
+        setResponse({ variant: "danger", message: details });
       });
   }, [selectedCategory.id, userId]);
 
@@ -130,7 +130,7 @@ const RecipeUpload: React.FC = () => {
 
           <Form className={classes.recipeFormContainer}>
             {response && (
-              <Alert variant={response.type}>{response.message}</Alert>
+              <Alert variant={response.variant}>{response.message}</Alert>
             )}
             <Form.Group
               className={classes.recipeTitleInputContainer}
