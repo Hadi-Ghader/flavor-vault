@@ -100,6 +100,10 @@
   font-weight: bold;
 }
 
+.alert {
+  margin-top: 2rem;
+}
+
 @media (max-width: 1800px) {
   .mainContainer {
     display: flex;

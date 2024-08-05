@@ -9,6 +9,7 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import Alert from 'react-bootstrap/Alert';
 import { BsStar } from "react-icons/bs";
 
 import classes from "./LandingPage.module.css";
@@ -26,6 +27,10 @@ const LandingPage: React.FC = () => {
   const [userFavorites, setUserFavorites] = useState<UserFavorite[]>([]);
   const [modal, showModal] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [alert, setAlert] = useState<{
+    type: string;
+    message: string;
+  } | null>(null);
 
   const handleSearch = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -35,6 +40,7 @@ const LandingPage: React.FC = () => {
         .get(`Recipe/search?query=${query}`)
         .then((response) => {
           setSearchResults(response.data);
+          setIsLoading(false);
           showModal(true);
         })
         .catch((error) => {
@@ -58,6 +64,8 @@ const LandingPage: React.FC = () => {
         .catch((exception) => {
           console.log(exception);
         });
+    }else {
+      setAlert({type: "danger", message: "Please login to view your favorites!"});
     }
   }, []);
 
@@ -71,6 +79,8 @@ const LandingPage: React.FC = () => {
       } catch (error) {
         console.log("Invalid Token", error);
       }
+    } else {
+      setIsLoading(false);
     }
   }, [getUserFavorites]);
 
@@ -94,7 +104,9 @@ const LandingPage: React.FC = () => {
         dialogClassName={classes.modalContainer}
       >
         <Modal.Header closeButton>
-          <Modal.Title className={classes.searchTitle}>Search Results</Modal.Title>
+          <Modal.Title className={classes.searchTitle}>
+            Search Results
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {searchResults.length > 0 ? (
@@ -118,7 +130,9 @@ const LandingPage: React.FC = () => {
                                   </span>
                                 ))}
                               </Card.Text>
-                              <Button className={classes.recipeButton}>Go to recipe</Button>
+                              <Button className={classes.recipeButton}>
+                                Go to recipe
+                              </Button>
                             </Card.Body>
                           </Card>
                         </Col>
@@ -151,11 +165,14 @@ const LandingPage: React.FC = () => {
       </Form>
 
       {userFavorites.length > 0 ? (
-        <h2 className={classes.heading}>Your Favorites <div className={classes.icon}><BsStar color="var(--main-green)" /></div></h2>
-      ) : (
         <h2 className={classes.heading}>
-          You don't have any favorites <br /> Start by adding some!
+          Your Favorites{" "}
+          <div className={classes.icon}>
+            <BsStar color="var(--main-green)" />
+          </div>
         </h2>
+      ) : (
+        alert && <Alert className={classes.alert} variant={alert.type}>{alert.message}</Alert>
       )}
 
       <Container className={classes.cardsContainer}>

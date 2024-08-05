@@ -38,6 +38,7 @@ const RecipeUpload: React.FC = () => {
       .get<Category[]>("/Category/getallcategories")
       .then((response) => {
         setCategories(response.data);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching categories", error);
@@ -50,7 +51,6 @@ const RecipeUpload: React.FC = () => {
     if (typeof token === "string") {
       try {
         setHasToken(true);
-
         const decodedToken: UserToken = jwtDecode(token);
 
         userId.current = decodedToken.nameid;
@@ -58,6 +58,7 @@ const RecipeUpload: React.FC = () => {
       } catch (error) {
         console.error("Invalid token:", error);
       }
+    } else {
       setIsLoading(false);
     }
   }, [getAllCategories]);
@@ -85,7 +86,7 @@ const RecipeUpload: React.FC = () => {
     }
 
     const bodyText = inputBodyRef.current!.value;
-    const bodyList = bodyText.split('\n');
+    const bodyList = bodyText.split("\n");
 
     let recipe: Recipe = {
       title: inputTitleRef.current!.value,

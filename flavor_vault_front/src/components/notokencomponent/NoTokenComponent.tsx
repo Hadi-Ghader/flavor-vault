@@ -11,11 +11,11 @@ const navigate = useNavigate();
   }, [navigate]);
 
   return (
-    <Alert variant="dark">
+    <Alert variant="danger">
       <Alert.Heading>Attention!</Alert.Heading>
       <p>You need to sign in to your account to be able to access this page.</p>
       <hr />
-      <Button onClick={redirectToSignIn} variant="outline-dark">
+      <Button onClick={redirectToSignIn} variant="outline-danger">
         Go to sign in
       </Button>
     </Alert>
