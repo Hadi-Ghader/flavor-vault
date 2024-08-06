@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Flavor_Vault.Controllers
 {
-    [Authorize]
+    
     [ApiController]
     [Route("api/[controller]")]
     public class RecipeController : Controller
@@ -16,7 +16,7 @@ namespace Flavor_Vault.Controllers
         {
             _recipeService = recipeService;
         }
-
+        
         [HttpGet("getRecipeById")]
         public async Task<IActionResult> GetRecipeById(int id)
         {
@@ -34,6 +34,7 @@ namespace Flavor_Vault.Controllers
             return Ok(recipe);
         }
 
+        [Authorize]
         [HttpPost("uploadrecipe")]
         public async Task<IActionResult> InsertRecipeAsync([FromBody] RecipeDTO recipeDTO)
         {

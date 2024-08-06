@@ -36,8 +36,8 @@ const LandingPage: React.FC = () => {
   const navigate = useNavigate();
 
   const handleGoToRecipe = useCallback((id: number) => {
-    navigate(`/recipe/${id}`)
-  }, []);
+    navigate(`/recipe/${id}`);
+  }, [navigate]);
 
   const handleSearch = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -52,6 +52,7 @@ const LandingPage: React.FC = () => {
         })
         .catch((error) => {
           console.log("Error searching recipes", error);
+          setIsLoading(false);
         });
     }
   }, []);
@@ -70,12 +71,10 @@ const LandingPage: React.FC = () => {
         })
         .catch((exception) => {
           console.log(exception);
+          setIsLoading(false);
         });
     } else {
-      setAlert({
-        type: "danger",
-        message: "Please login to view your favorites!",
-      });
+      setIsLoading(false);
     }
   }, []);
 
@@ -88,8 +87,13 @@ const LandingPage: React.FC = () => {
         getUserFavorites();
       } catch (error) {
         console.log("Invalid Token", error);
+        setIsLoading(false);
       }
     } else {
+      setAlert({
+        type: "danger",
+        message: "Please login to view your favorites!",
+      });
       setIsLoading(false);
     }
   }, [getUserFavorites]);
@@ -142,6 +146,7 @@ const LandingPage: React.FC = () => {
                               </Card.Text>
                               <Button
                                 onClick={() => {
+                                  console.log(result);
                                   handleGoToRecipe(result.id!);
                                 }}
                                 className={classes.recipeButton}
@@ -179,62 +184,75 @@ const LandingPage: React.FC = () => {
         />
       </Form>
 
-      {userFavorites.length > 0 ? (
-        <h2 className={classes.heading}>
-          Your Favorites{" "}
-          <div className={classes.icon}>
-            <BsStar color="var(--main-green)" />
-          </div>
-        </h2>
-      ) : (
-        alert && (
-          <Alert className={classes.alert} variant={alert.type}>
-            {alert.message}
-          </Alert>
-        )
+      {alert && (
+        <Alert className={classes.alert} variant={alert.type}>
+          {alert.message}
+        </Alert>
       )}
 
-      <Container className={classes.cardsContainer}>
-        {userFavorites.length > 0 && (
-          <div>
-            {userFavorites.map((favorites, index) => {
-              if (index % 4 === 0) {
-                return (
-                  <Row key={index} className="mb-4">
-                    {userFavorites.slice(index, index + 4).map((fav, idx) => (
-                      <Col key={idx} xs={12} sm={6} md={4} lg={3}>
-                        <Card className={classes.card}>
-                          <Card.Img variant="top" src="/assets/default.jpg" />
-                          <Card.Body>
-                            <Card.Title>{fav.title}</Card.Title>
-                            <Card.Text>
-                              {fav.body.map((item, index) => (
-                                <span key={index}>
-                                  {item}
-                                  <br />
-                                </span>
-                              ))}
-                            </Card.Text>
-                            <Button
-                              onClick={() => {
-                                handleGoToRecipe(favorites.id!);
-                              }}
-                              className={classes.recipeButton}
-                            >
-                              Go to recipe
-                            </Button>
-                          </Card.Body>
-                        </Card>
-                      </Col>
-                    ))}
-                  </Row>
-                );
-              }
-              return null;
-            })}
-          </div>
-        )}
-      </Container>
+      {!alert && (
+        <div>
+          {userFavorites.length > 0 ? (
+            <h2 className={classes.heading}>
+              Your Favorites{" "}
+              <div className={classes.icon}>
+                <BsStar color="var(--main-green)" />
+              </div>
+            </h2>
+          ) : (
+            <h2 className={classes.heading}>
+              You don't have any favorites. Start by adding some!{" "}
+            </h2>
+          )}
+
+          <Container className={classes.cardsContainer}>
+            {userFavorites.length > 0 && (
+              <div>
+                {userFavorites.map((favorites, index) => {
+                  if (index % 4 === 0) {
+                    return (
+                      <Row key={index} className="mb-4">
+                        {userFavorites
+                          .slice(index, index + 4)
+                          .map((fav, idx) => (
+                            <Col key={idx} xs={12} sm={6} md={4} lg={3}>
+                              <Card className={classes.card}>
+                                <Card.Img
+                                  variant="top"
+                                  src="/assets/default.jpg"
+                                />
+                                <Card.Body>
+                                  <Card.Title>{fav.title}</Card.Title>
+                                  <Card.Text>
+                                    {fav.body.map((item, index) => (
+                                      <span key={index}>
+                                        {item}
+                                        <br />
+                                      </span>
+                                    ))}
+                                  </Card.Text>
+                                  <Button
+                                    onClick={() => {
+                                      handleGoToRecipe(favorites.id!);
+                                    }}
+                                    className={classes.recipeButton}
+                                  >
+                                    Go to recipe
+                                  </Button>
+                                </Card.Body>
+                              </Card>
+                            </Col>
+                          ))}
+                      </Row>
+                    );
+                  }
+                  return null;
+                })}
+              </div>
+            )}
+          </Container>
+        </div>
+      )}
     </div>
   );
 };
