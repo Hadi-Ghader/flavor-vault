@@ -18,13 +18,29 @@
 }
 
 .likeButton {
-    background-color: var(--main-green);
-    color: var(--accent-color);
-    border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--main-green);
+  color: var(--accent-color);
+  border: none;
+  margin-right: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.likeButton:active, .likeButton:focus-within, .likeButton:focus, .likeButton:hover {
-    background-color: var(--side-color) !important;
-    color: var(--main-green) !important;
-    border: none;
+.likeButton:active,
+.likeButton:focus,
+.likeButton:hover {
+  background-color: var(--side-color) !important;
+  color: var(--main-green) !important;
+  border: none;
+}
+
+.likeButton:focus-within {
+  background-color: var(--accent-color) !important;
+  color: var(--main-green);
+  border: none;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5);
 }

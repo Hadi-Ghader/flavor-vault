@@ -53,5 +53,16 @@ namespace Flavor_Vault.Infrastructure.Repositories
 
             return count;
         }
+
+        public async Task DeleteLikeAsync(int userId, int recipeId)
+        {
+            var dbconnectipon = Connection;
+            const string query = @"DELETE FROM public.""likes"" WHERE user_id = @UserId AND recipe_id = @RecipeId";
+
+            await dbconnectipon.ExecuteAsync(query, new { 
+                UserId = userId, 
+                RecipeId = recipeId
+            });
+        }
     }
 }

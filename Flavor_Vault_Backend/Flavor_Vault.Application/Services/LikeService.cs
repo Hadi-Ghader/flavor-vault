@@ -34,5 +34,18 @@ namespace Flavor_Vault.Application.Services
             var likes = await _likeRepositroy.GetAllLikesAsync(id);
             return likes;
         }
+
+        public async Task<bool> UserHasLikedAsync(int userId, int recipeId)
+        {
+            var isLiked = await _likeRepositroy.UserHasLikedAsync(userId, recipeId);
+
+            return isLiked;
+
+        }
+
+        public async Task DeleteLikeAsync(int userId, int recipeId)
+        {
+            await _likeRepositroy.DeleteLikeAsync(userId, recipeId);
+        }
     }
 }

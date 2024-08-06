@@ -15,6 +15,19 @@ namespace Flavor_Vault.Controllers
             _likeService = likeService;
         }
 
+        [HttpGet("userHasLiked")]
+        public async Task<IActionResult> UserHasLikedAsync(int userId, int recipeId)
+        {
+            if (userId <= 0 || recipeId <= 0)
+            {
+                return BadRequest("Invalid like data.");
+            }
+
+            var result = await _likeService.UserHasLikedAsync(userId, recipeId);
+
+            return Ok(result);
+        }
+
         [HttpPost("addLike")]
         public async Task<IActionResult> AddLikeAsync([FromBody] LikeDTO likeDTO)
         {
@@ -31,6 +44,19 @@ namespace Flavor_Vault.Controllers
             }
 
             return Ok("Recipe liked successfully.");
+        }
+
+        [HttpDelete("removeLike")]
+        public async Task<IActionResult> DeleteLikeAsync(int userId, int recipeId)
+        {
+            if (userId <= 0 || recipeId <= 0)
+            {
+                return BadRequest("Invalid like data.");
+            }
+
+            await _likeService.DeleteLikeAsync(userId, recipeId);
+
+            return Ok("Like Deleted");
         }
     }
 }

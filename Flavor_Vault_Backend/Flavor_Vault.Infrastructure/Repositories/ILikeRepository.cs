@@ -7,5 +7,6 @@ namespace Flavor_Vault.Infrastructure.Repositories
         Task<bool> UserHasLikedAsync(int userId, int recipeId);
         Task AddLikeAsync(Like like);
         Task<int> GetAllLikesAsync(int id);
+        Task DeleteLikeAsync(int userId, int recipeId);
     }
 }
