@@ -6,8 +6,8 @@ namespace Flavor_Vault.Application.Services
 {
     public class CategoryService : ICategoryService
     {
-        public readonly ICategoryRepository _categoryRepository;
-        public readonly IMapper _mapper;
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly IMapper _mapper;
 
         public CategoryService(ICategoryRepository categoryRepository, IMapper categoryMapper)
         {
