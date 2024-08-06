@@ -11,10 +11,12 @@ namespace Flavor_Vault.Controllers
     public class RecipeController : Controller
     {
         private readonly IRecipeService _recipeService;
+        private readonly ILikeService _likeService;
 
-        public RecipeController(IRecipeService recipeService)
+        public RecipeController(IRecipeService recipeService, ILikeService likeService)
         {
             _recipeService = recipeService;
+            _likeService = likeService;
         }
         
         [HttpGet("getRecipeById")]
@@ -26,12 +28,32 @@ namespace Flavor_Vault.Controllers
             }
 
             var recipe = await _recipeService.GetRecipeByIdAsync(id);
+            var likesCount = await _likeService.GetAllLikesAsync(id);
+
             if (recipe == null)
             {
                 return NotFound("Can not find recipe");
             }
 
-            return Ok(recipe);
+            var result = new
+            {
+                Recipe = recipe,
+                LikesCount = likesCount
+            };
+
+            return Ok(result);
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchRecipesAsync([FromQuery] string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return BadRequest("Search query cannot be empty.");
+            }
+
+            var recipes = await _recipeService.SearchRecipesAsync(query);
+            return Ok(recipes);
         }
 
         [Authorize]
@@ -47,18 +69,6 @@ namespace Flavor_Vault.Controllers
             {
                 return StatusCode(500, new { Message = "An error occurred while processing your request.", Details = exception.Message });
             }
-        }
-
-        [HttpGet("search")]
-        public async Task<IActionResult> SearchRecipesAsync([FromQuery] string query)
-        {
-            if (string.IsNullOrWhiteSpace(query))
-            {
-                return BadRequest("Search query cannot be empty.");
-            }
-
-            var recipes = await _recipeService.SearchRecipesAsync(query);
-            return Ok(recipes);
         }
     }
 }

@@ -19,7 +19,9 @@ namespace Flavor_Vault.Infrastructure.Repositories
         public async Task<Recipe> GetRecipeByIdAsync(int id)
         {
             using var dbconnection = Connection;
-            const string query = @"SELECT * FROM public.""recipes"" WHERE ""id"" = @Id";
+            const string query = @"SELECT id AS Id, title AS Title, body AS Body, user_id AS UserId, category_id AS CategoryId 
+                                    FROM public.""recipes"" 
+                                    WHERE ""id"" = @Id";
 
             var result = await dbconnection.QuerySingleOrDefaultAsync<Recipe>(query, new { Id = id });
 

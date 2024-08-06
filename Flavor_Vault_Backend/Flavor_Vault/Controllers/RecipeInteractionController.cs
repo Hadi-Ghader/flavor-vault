@@ -32,17 +32,5 @@ namespace Flavor_Vault.Controllers
 
             return Ok("Recipe liked successfully.");
         }
-
-        [HttpGet("GetAllLikes")]
-        public async Task<IActionResult> GetAllLikesAsync(int id)
-        { 
-            if(id <= 0)
-            {
-                return BadRequest("Id can not be zero");
-            }
-
-            var likes = await _likeService.GetAllLikesAsync(id);
-            return Ok(likes);
-        }
     }
 }
