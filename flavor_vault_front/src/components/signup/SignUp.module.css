@@ -71,11 +71,17 @@ body {
 
 .formSubmitButton {
   background-color: var(--main-green);
+  color: var(--side-color);
   border: none;
 }
 
 .formSubmitButton:hover {
   background-color: var(--accent-color);
+  border: none;
+}
+
+.formSubmitButton:active {
+  background-color: var(--accent-color) !important;
   border: none;
 }
 

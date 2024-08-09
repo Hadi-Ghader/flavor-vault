@@ -7,13 +7,31 @@ namespace Flavor_Vault.Application.Services
 {
     public class LikeService : ILikeService
     {
+        private readonly IRecipeRepository _recipeRepository;
         private readonly ILikeRepository _likeRepositroy;
         private readonly IMapper _mapper;
 
-        public LikeService(ILikeRepository likeRepositroy, IMapper mapper)
+        public LikeService(IRecipeRepository recipeRepository, ILikeRepository likeRepositroy, IMapper mapper)
         {
+            _recipeRepository = recipeRepository;
             _likeRepositroy = likeRepositroy;
             _mapper = mapper;
+        }
+
+        public async Task<IEnumerable<RecipeDTO>> GetRecipesWithLikeStatusAsync(int userId)
+        {
+            var recipes = await _recipeRepository.GetAllRecipesAsync();
+            var likedRecipeIds = await _likeRepositroy.GetLikedRecipeIdsAsync(userId);
+
+            var recipeDTOS = _mapper.Map<IEnumerable<RecipeDTO>>(recipes);
+
+            foreach (var recipeDTO in recipeDTOS)
+            {
+                recipeDTO.IsLiked = likedRecipeIds.Contains(recipeDTO.Id);
+            }
+
+            return recipeDTOS;
+
         }
 
         public async Task<bool> AddLikeAsync(LikeDTO likeDTO)

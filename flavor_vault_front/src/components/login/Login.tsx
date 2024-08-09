@@ -10,7 +10,6 @@ import Alert from "react-bootstrap/Alert";
 import classes from "./Login.module.css";
 import instance from "../../helper/AxiosInstance";
 
-
 const Login: React.FC = () => {
   const [alert, setAlert] = useState<string | null>(null);
 
@@ -141,7 +140,7 @@ const Login: React.FC = () => {
         </Link>
 
         <Button
-          className={classes.fromSubmitButton}
+          className={classes.formSubmitButton}
           type="button"
           onClick={handleLogInSubmit}
         >

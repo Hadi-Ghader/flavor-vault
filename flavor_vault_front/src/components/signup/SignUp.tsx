@@ -9,7 +9,6 @@ import Alert from "react-bootstrap/Alert";
 import classes from "./SignUp.module.css";
 import { UserSignUp } from "../../models/UserSignUp";
 
-
 import instance from "../../helper/AxiosInstance";
 
 const SignUp: React.FC = () => {

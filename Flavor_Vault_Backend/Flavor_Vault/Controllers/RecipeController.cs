@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Flavor_Vault.Controllers
 {
-    
+
     [ApiController]
     [Route("api/[controller]")]
     public class RecipeController : Controller
@@ -18,7 +18,7 @@ namespace Flavor_Vault.Controllers
             _recipeService = recipeService;
             _likeService = likeService;
         }
-        
+
         [HttpGet("getRecipeById")]
         public async Task<IActionResult> GetRecipeById(int id)
         {
@@ -35,13 +35,20 @@ namespace Flavor_Vault.Controllers
                 return NotFound("Can not find recipe");
             }
 
-            var result = new
+            try
             {
-                Recipe = recipe,
-                LikesCount = likesCount
-            };
+                var result = new
+                {
+                    Recipe = recipe,
+                    LikesCount = likesCount
+                };
 
-            return Ok(result);
+                return Ok(result);
+            }
+            catch (Exception exception)
+            {
+                return StatusCode(500, new { Message = "An error occurred while processing your request.", Details = exception.Message });
+            }
         }
 
         [HttpGet("search")]
@@ -52,8 +59,16 @@ namespace Flavor_Vault.Controllers
                 return BadRequest("Search query cannot be empty.");
             }
 
-            var recipes = await _recipeService.SearchRecipesAsync(query);
-            return Ok(recipes);
+            try
+            {
+                var recipes = await _recipeService.SearchRecipesAsync(query);
+                return Ok(recipes);
+
+            }
+            catch (Exception exception)
+            {
+                return StatusCode(500, new { Message = "An error occurred while processing your request.", Details = exception.Message });
+            }
         }
 
         [Authorize]

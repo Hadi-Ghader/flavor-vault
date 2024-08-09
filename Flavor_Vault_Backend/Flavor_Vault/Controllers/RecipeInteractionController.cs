@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Flavor_Vault.Controllers
 {
+
     [ApiController]
     [Route("api/[controller]")]
     public class RecipeInteractionController : Controller
@@ -24,6 +25,19 @@ namespace Flavor_Vault.Controllers
             }
 
             var result = await _likeService.UserHasLikedAsync(userId, recipeId);
+
+            return Ok(result);
+        }
+
+        [HttpGet("getRecipesWithLikeStatus")]
+        public async Task<IActionResult> GetRecipesWithLikeStatusAsync(int userId) 
+        {
+            if (userId <= 0)
+            {
+                return BadRequest("Invalid like data.");
+            }
+
+            var result = await _likeService.GetRecipesWithLikeStatusAsync(userId);
 
             return Ok(result);
         }

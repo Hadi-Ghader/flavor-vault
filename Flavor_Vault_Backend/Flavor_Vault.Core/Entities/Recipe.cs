@@ -7,6 +7,6 @@
         public string[] Body { get; set; }
         public int UserId { get; set; }
         public int CategoryId { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-    }
+        public string ImageUrl {  get; set; }
+    } 
 }

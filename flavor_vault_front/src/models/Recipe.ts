@@ -4,4 +4,6 @@ export type Recipe = {
     body: string[],
     userId: number,
     categoryId: number
+    imageUrl: string
+    isLiked?: boolean
 };

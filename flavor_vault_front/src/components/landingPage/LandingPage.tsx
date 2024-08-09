@@ -1,29 +1,41 @@
-import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import secureLocalStorage from "react-secure-storage";
+import instanceJwt from "../../helper/AxiosInstanceJWT";
 
-import Card from "react-bootstrap/Card";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Form from "react-bootstrap/Form";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
-import Alert from "react-bootstrap/Alert";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Modal,
+  Button,
+  Alert,
+  Spinner,
+  Card,
+  OverlayTrigger,
+  Tooltip,
+} from "react-bootstrap";
 import { BsStar } from "react-icons/bs";
+import { FaArrowCircleRight, FaRegHeart } from "react-icons/fa";
+import { FaHeart, FaBookmark } from "react-icons/fa6";
+
+import NavBar from "../navbar/NavBar";
 
 import classes from "./LandingPage.module.css";
-import NavBar from "../navbar/NavBar";
-import instanceJwt from "../../helper/AxiosInstanceJWT";
+
 import { UserFavorite } from "../../models/UserFavorite";
 import { UserToken } from "../../models/UserToken";
-import { Spinner } from "react-bootstrap";
 import { Recipe } from "../../models/Recipe";
-import { useNavigate } from "react-router-dom";
+import { Like } from "../../models/Like";
 
 const LandingPage: React.FC = () => {
-  const Id = useRef<number | null>(null);
+  const userId = useRef<number | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+  const [imageLoading, setImageLoading] = useState<{ [key: number]: boolean }>(
+    {}
+  );
   const [searchResults, setSearchResults] = useState<Recipe[]>([]);
   const [userFavorites, setUserFavorites] = useState<UserFavorite[]>([]);
   const [modal, showModal] = useState<boolean>(false);
@@ -35,9 +47,16 @@ const LandingPage: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const handleGoToRecipe = useCallback((id: number) => {
-    navigate(`/recipe/${id}`);
-  }, [navigate]);
+  const handleGoToRecipe = useCallback(
+    (id: number) => {
+      navigate(`/recipe/${id}`);
+    },
+    [navigate]
+  );
+
+  const handleImageLoad = useCallback((id: number) => {
+    setImageLoading((prevLoading) => ({ ...prevLoading, [id]: false }));
+  }, []);
 
   const handleSearch = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -57,14 +76,66 @@ const LandingPage: React.FC = () => {
     }
   }, []);
 
+  const handleRemoveFromFavoritesButton = useCallback((recipeId: number) => {
+    instanceJwt
+      .delete(
+        `Favorite/removeFavorite?userId=${userId.current}&recipeId=${recipeId}`
+      )
+      .then((response) => {
+        setUserFavorites((prevFavorites) =>
+          prevFavorites.filter((fav) => fav.recipeId !== recipeId)
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  const handleLikeButton = useCallback((recipeId: number, liked: boolean) => {
+    if (!liked) {
+      let like: Like = {
+        UserId: userId.current!,
+        RecipeId: recipeId,
+      };
+
+      instanceJwt
+        .post("RecipeInteraction/addLike", like)
+        .then((response) => {
+          setUserFavorites((prevFavorites) =>
+            prevFavorites.map((fav) =>
+              fav.recipeId === recipeId ? { ...fav, isLiked: true } : fav
+            )
+          );
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      instanceJwt
+        .delete(
+          `RecipeInteraction/removeLike?userId=${userId.current}&recipeId=${recipeId}`
+        )
+        .then((response) => {
+          setUserFavorites((prevFavorites) =>
+            prevFavorites.map((fav) =>
+              fav.recipeId === recipeId ? { ...fav, isLiked: false } : fav
+            )
+          );
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, []);
+
   const handleCloseModal = useCallback(() => {
     showModal(false);
   }, []);
 
   const getUserFavorites = useCallback(() => {
-    if (Id.current != null) {
+    if (userId.current != null) {
       instanceJwt
-        .get(`Favorite/getFavoritesByUser?Id=${Id.current}`)
+        .get(`Favorite/getUserFavoritesWithLikes?userId=${userId.current}`)
         .then((response) => {
           setUserFavorites(response.data);
           setIsLoading(false);
@@ -83,7 +154,7 @@ const LandingPage: React.FC = () => {
     if (typeof token === "string") {
       try {
         const decodedToken: UserToken = jwtDecode(token);
-        Id.current = decodedToken.nameid;
+        userId.current = decodedToken.nameid;
         getUserFavorites();
       } catch (error) {
         console.log("Invalid Token", error);
@@ -128,42 +199,68 @@ const LandingPage: React.FC = () => {
               if (index % 4 === 0) {
                 return (
                   <Row key={index} className="mb-4">
-                    {searchResults
-                      .slice(index, index + 4)
-                      .map((result, idx) => (
-                        <Col key={idx} xs={12} sm={6} md={4} lg={3}>
-                          <Card className={classes.card}>
-                            <Card.Img variant="top" src="/assets/default.jpg" />
-                            <Card.Body>
-                              <Card.Title>{result.title}</Card.Title>
-                              <Card.Text>
-                                {result.body.map((item, index) => (
+                    {searchResults.slice(index, index + 4).map((result) => (
+                      <Col key={result.id} xs={12} sm={6} md={4} lg={3}>
+                        <Card className={classes.card}>
+                          {imageLoading[result.id!] ? (
+                            <Spinner
+                              animation="border"
+                              role="status"
+                              className={classes.loading}
+                            />
+                          ) : (
+                            <Card.Img
+                              className={classes.cardImage}
+                              variant="top"
+                              src={result.imageUrl}
+                              onLoad={() => handleImageLoad(result.id!)}
+                            />
+                          )}
+                          <Card.Body className={classes.cardBody}>
+                            <Card.Title>{result.title}</Card.Title>
+                            <Card.Text className={classes.cardText}>
+                              {result.body.length > 3 ? (
+                                <div>
+                                  {result.body
+                                    .slice(0, 3)
+                                    .map((item, index) => (
+                                      <span key={index}>
+                                        {item}
+                                        <br />
+                                      </span>
+                                    ))}
+                                  <span className={classes.ellipsis}>
+                                    ...more
+                                  </span>
+                                </div>
+                              ) : (
+                                result.body.map((item, index) => (
                                   <span key={index}>
                                     {item}
                                     <br />
                                   </span>
-                                ))}
-                              </Card.Text>
+                                ))
+                              )}
+                            </Card.Text>
+                            <div className={classes.buttonContainer}>
                               <Button
-                                onClick={() => {
-                                  console.log(result);
-                                  handleGoToRecipe(result.id!);
-                                }}
+                                onClick={() => handleGoToRecipe(result.id!)}
                                 className={classes.recipeButton}
                               >
-                                Go to recipe
+                                <FaArrowCircleRight />
                               </Button>
-                            </Card.Body>
-                          </Card>
-                        </Col>
-                      ))}
+                            </div>
+                          </Card.Body>
+                        </Card>
+                      </Col>
+                    ))}
                   </Row>
                 );
               }
               return null;
             })
           ) : (
-            <p className={classes.noResultText}>No results found.</p>
+            <div className={classes.noResultText}>No results found.</div>
           )}
         </Modal.Body>
         <Modal.Footer>
@@ -215,30 +312,125 @@ const LandingPage: React.FC = () => {
                         {userFavorites
                           .slice(index, index + 4)
                           .map((fav, idx) => (
-                            <Col key={idx} xs={12} sm={6} md={4} lg={3}>
+                            <Col
+                              key={fav.recipeId}
+                              xs={12}
+                              sm={6}
+                              md={4}
+                              lg={3}
+                            >
                               <Card className={classes.card}>
-                                <Card.Img
-                                  variant="top"
-                                  src="/assets/default.jpg"
-                                />
-                                <Card.Body>
+                                {imageLoading[fav.recipeId] ? (
+                                  <Spinner
+                                    animation="border"
+                                    role="status"
+                                    className={classes.loading}
+                                  />
+                                ) : (
+                                  <Card.Img
+                                    className={classes.cardImage}
+                                    variant="top"
+                                    src={fav.imageUrl}
+                                    onLoad={() => handleImageLoad(fav.id)}
+                                  />
+                                )}
+
+                                <Card.Body className={classes.cardBody}>
                                   <Card.Title>{fav.title}</Card.Title>
-                                  <Card.Text>
-                                    {fav.body.map((item, index) => (
-                                      <span key={index}>
-                                        {item}
-                                        <br />
-                                      </span>
-                                    ))}
+                                  <Card.Text className={classes.cardText}>
+                                    {fav.body.length > 3 ? (
+                                      <div>
+                                        {fav.body
+                                          .slice(0, 3)
+                                          .map((item, index) => (
+                                            <span key={index}>
+                                              {item}
+                                              <br />
+                                            </span>
+                                          ))}
+                                        <span className={classes.ellipsis}>
+                                          ...more
+                                        </span>
+                                      </div>
+                                    ) : (
+                                      fav.body.map((item, index) => (
+                                        <span key={index}>
+                                          {item}
+                                          <br />
+                                        </span>
+                                      ))
+                                    )}
                                   </Card.Text>
-                                  <Button
-                                    onClick={() => {
-                                      handleGoToRecipe(favorites.id!);
-                                    }}
-                                    className={classes.recipeButton}
-                                  >
-                                    Go to recipe
-                                  </Button>
+                                  <div className={classes.buttonContainer}>
+                                    <OverlayTrigger
+                                      placement="top"
+                                      overlay={
+                                        <Tooltip
+                                          id={`tooltip-like-${fav.recipeId}`}
+                                        >
+                                          {fav.isLiked ? "Unlike" : "Like"}
+                                        </Tooltip>
+                                      }
+                                    >
+                                      <Button
+                                        onClick={() => {
+                                          handleLikeButton(
+                                            fav.recipeId,
+                                            fav.isLiked
+                                          );
+                                        }}
+                                        className={classes.recipeButton}
+                                      >
+                                        {fav.isLiked ? (
+                                          <FaHeart />
+                                        ) : (
+                                          <FaRegHeart />
+                                        )}
+                                      </Button>
+                                    </OverlayTrigger>
+
+                                    <OverlayTrigger
+                                      placement="top"
+                                      overlay={
+                                        <Tooltip
+                                          id={`tooltip-bookmark-${fav.recipeId}`}
+                                        >
+                                          Remove
+                                        </Tooltip>
+                                      }
+                                    >
+                                      <Button
+                                        onClick={() => {
+                                          handleRemoveFromFavoritesButton(
+                                            fav.recipeId
+                                          );
+                                        }}
+                                        className={classes.recipeButton}
+                                      >
+                                        <FaBookmark />
+                                      </Button>
+                                    </OverlayTrigger>
+
+                                    <OverlayTrigger
+                                      placement="top"
+                                      overlay={
+                                        <Tooltip
+                                          id={`tooltip-go-to-recipe-${fav.recipeId}`}
+                                        >
+                                          Go to recipe
+                                        </Tooltip>
+                                      }
+                                    >
+                                      <Button
+                                        onClick={() => {
+                                          handleGoToRecipe(fav.recipeId);
+                                        }}
+                                        className={classes.recipeButton}
+                                      >
+                                        <FaArrowCircleRight />
+                                      </Button>
+                                    </OverlayTrigger>
+                                  </div>
                                 </Card.Body>
                               </Card>
                             </Col>

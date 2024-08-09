@@ -30,6 +30,16 @@ namespace Flavor_Vault.Infrastructure.Repositories
             return count > 0;
         }
 
+        public async Task<IEnumerable<int>> GetLikedRecipeIdsAsync(int userId)
+        {
+            using var dbconnection = Connection;
+            string query = @"SELECT recipe_id FROM public.""likes"" WHERE user_id = @UserId";
+
+            var likedRecipeIds = await dbconnection.QueryAsync<int>(query, new { UserId = userId });
+
+            return new HashSet<int>(likedRecipeIds);
+        }
+
         public async Task AddLikeAsync(Like like)
         {
 
@@ -64,5 +74,7 @@ namespace Flavor_Vault.Infrastructure.Repositories
                 RecipeId = recipeId
             });
         }
+
+        
     }
 }

@@ -57,7 +57,7 @@
 }
 
 .categoryDropDown:hover {
-  background-color: var(--accent-color);
+  background-color: var(--accent-color) !important;
   border: none;
 }
 
@@ -97,7 +97,41 @@
   border: none;
 }
 
+.formSubmitButton:active {
+  background-color: var(--accent-color) !important;
+  border: none;
+}
+
 .loading {
+  color: var(--main-green);
+}
+
+.customImageUpload {
+  background-color: var(--main-green);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  color: var(--side-color);
+  margin-bottom: 1rem;
+}
+
+.customImageUpload:hover {
+  transition: background-color 0.3s ease;
+  background-color: var(--accent-color);
+  cursor: pointer;
+}
+
+.inputImage {
+  display: none;
+}
+
+.imageName {
+  max-width: 20rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 1rem;
+  text-align: left;
+  margin-bottom: 1rem;
   color: var(--main-green);
 }
 
