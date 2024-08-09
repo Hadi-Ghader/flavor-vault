@@ -62,11 +62,13 @@ namespace Flavor_Vault
             builder.Services.AddScoped<IRecipeRepository, RecipeRepository>(provider => new RecipeRepository(connectionString!));
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>(provider => new CategoryRepository(connectionString!));
             builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>(provider => new FavoriteRepository(connectionString!));
+            builder.Services.AddScoped<ILikeRepository, LikeRepository>(provider => new LikeRepository(connectionString!));
 
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IRecipeService, RecipeService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IFavoriteService, FavoriteService>();
+            builder.Services.AddScoped<ILikeService, LikeService>();
 
             var app = builder.Build();
 

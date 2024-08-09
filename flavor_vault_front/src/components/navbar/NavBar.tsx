@@ -28,12 +28,14 @@ const NavBar: React.FC = () => {
     <Navbar expand="lg" className={classes.navbarContainer}>
       <Container>
         <Navbar.Brand className={classes.mainNavItem}>
-          Flavour Vault
+          <Nav.Link href="/" className={classes.navItem}>
+            Flavour Vault
+          </Nav.Link>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-          <Nav.Link href="/" className={classes.navItem}>
+            <Nav.Link href="/" className={classes.navItem}>
               Home Page
             </Nav.Link>
             <Nav.Link href="/recipeupload" className={classes.navItem}>

@@ -1,0 +1,18 @@
+.favoriteButton {
+  background-color: var(--main-green);
+  color: var(--side-color);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.favoriteButton:active,
+.favoriteButton:focus,
+.favoriteButton:hover,
+.favoriteButton:focus-within {
+  background-color: var(--accent-color) !important;
+  color: var(--side-color);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5);
+}

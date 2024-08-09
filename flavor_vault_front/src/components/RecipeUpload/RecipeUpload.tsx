@@ -1,6 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import secureLocalStorage from "react-secure-storage";
+import {
+  storage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+} from "../../helper/Firebase";
 
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -21,6 +27,7 @@ const RecipeUpload: React.FC = () => {
   const [hasToken, setHasToken] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [imageName, setImageName] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<Category>({
     id: 0,
     name: "Selected Category",
@@ -31,8 +38,10 @@ const RecipeUpload: React.FC = () => {
     message: string;
   } | null>(null);
 
-  const inputTitleRef = useRef<HTMLInputElement>(null);
-  const inputBodyRef = useRef<HTMLTextAreaElement>(null);
+  const inputTitleRef = useRef<HTMLInputElement | null>(null);
+  const inputBodyRef = useRef<HTMLTextAreaElement | null>(null);
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
+
   const getAllCategories = useCallback(() => {
     instance
       .get<Category[]>("/Category/getallcategories")
@@ -41,7 +50,7 @@ const RecipeUpload: React.FC = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        setResponse({variant: "danger", message: `${error.response.data}`});
+        setResponse({ variant: "danger", message: `${error.response.data}` });
       });
   }, []);
 
@@ -70,15 +79,22 @@ const RecipeUpload: React.FC = () => {
     []
   );
 
-  const handleRecipeUpload = useCallback(() => {
+  const handleFileChange = useCallback(() => {
+    if (imageInputRef.current && imageInputRef.current.files?.length) {
+      const file = imageInputRef.current.files[0];
+      setImageName(file.name);
+    }
+  }, []);
+
+  const handleRecipeUpload = useCallback(async () => {
     if (
-      inputTitleRef.current!.value === "" ||
-      inputBodyRef.current!.value === "" ||
+      inputTitleRef.current?.value === "" ||
+      inputBodyRef.current?.value === "" ||
       selectedCategory.id === 0
     ) {
       let message = "Please fill out the following fields: ";
-      if (inputTitleRef.current!.value === "") message += "Title ";
-      if (inputBodyRef.current!.value === "") message += "Body ";
+      if (inputTitleRef.current?.value === "") message += "Title ";
+      if (inputBodyRef.current?.value === "") message += "Body ";
       if (selectedCategory.id === 0) message += "Category ";
 
       setResponse({ variant: "danger", message: message.trim() });
@@ -87,25 +103,40 @@ const RecipeUpload: React.FC = () => {
 
     const bodyText = inputBodyRef.current!.value;
     const bodyList = bodyText.split("\n");
+    let imageUrl =
+      "https://firebasestorage.googleapis.com/v0/b/flavor-vault.appspot.com/o/default-image.jpg?alt=media&token=86878369-3545-4611-a735-7238d7da1829";
+
+    if (imageInputRef.current && imageInputRef.current.files?.length) {
+      const file = imageInputRef.current.files[0];
+      setImageName("");
+      const storageRef = ref(storage, `images/${file.name}`);
+      await uploadBytes(storageRef, file);
+      imageUrl = await getDownloadURL(storageRef);
+    }
 
     let recipe: Recipe = {
       title: inputTitleRef.current!.value,
       body: bodyList,
       userId: userId.current!,
       categoryId: selectedCategory.id,
+      imageUrl: imageUrl,
     };
 
     instanceJwt
       .post("Recipe/uploadrecipe", recipe)
       .then((response) => {
         setResponse({ variant: "success", message: response.data });
+        inputTitleRef.current!.value = "";
+        inputBodyRef.current!.value = "";
+        imageInputRef.current!.value = "";
+        setSelectedCategory({ id: 0, name: "Select Category" });
       })
       .catch((exception) => {
         console.log(exception);
         const { details } = exception.response.data;
         setResponse({ variant: "danger", message: details });
       });
-  }, [selectedCategory.id, userId]);
+  }, [selectedCategory.id, userId, inputTitleRef, inputBodyRef, imageInputRef]);
 
   if (isLoading) {
     return (
@@ -182,6 +213,29 @@ const RecipeUpload: React.FC = () => {
               </Dropdown.Menu>
             </Dropdown>
 
+            <div>
+              <label
+                htmlFor="image-upload"
+                className={classes.customImageUpload}
+              >
+                <div>Upload Image </div>
+              </label>
+
+              {imageName && (
+                <div className={classes.imageName}>
+                  Selected Image: {imageName}
+                </div>
+              )}
+
+              <input
+                type="file"
+                accept="image/*"
+                ref={imageInputRef}
+                id="image-upload"
+                className={classes.inputImage}
+                onChange={handleFileChange}
+              />
+            </div>
             <Button
               type="button"
               className={classes.formSubmitButton}
