@@ -36,7 +36,7 @@ namespace Flavor_Vault.Infrastructure.Repositories
         public async Task<double> GetAverageRatingAsync(int recipeId)
         {
             var dbconnection = Connection;
-            var query = @"SELECT AVG(CAST(StarCounts AS FLOAT)) FROM public.""ratings""
+            var query = @"SELECT AVG(CAST(stars_count AS FLOAT)) FROM public.""ratings""
                             WHERE recipe_id = @RecipeId;";
 
             var average = await dbconnection.ExecuteScalarAsync<double>(query, new { RecipeId = recipeId });

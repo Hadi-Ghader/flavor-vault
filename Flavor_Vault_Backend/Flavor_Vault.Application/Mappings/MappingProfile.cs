@@ -19,7 +19,7 @@ namespace Flavor_Vault.Application.Mappings
             CreateMap<FavoriteDTO, Favorite>().ReverseMap();
             CreateMap<CommentWithoutIdDTO, Comment>().ReverseMap();
             CreateMap<CommentsWithUserDTO,  CommentsWithUser>().ReverseMap();
-            CreateMap<RatingDTO, Rating>().ReverseMap();
+            CreateMap<RatingWithoutIdDTO, Rating>().ReverseMap();
         }
     }
 }

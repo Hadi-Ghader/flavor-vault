@@ -16,7 +16,7 @@ namespace Flavor_Vault.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<bool> SubmitRatingAsync(RatingDTO ratingDto)
+        public async Task<bool> SubmitRatingAsync(RatingWithoutIdDTO ratingDto)
         {
             var hasRated = await _ratingRepository.HasUserRatedAsync(ratingDto.UserId, ratingDto.RecipeId);
             if (hasRated)

@@ -168,7 +168,7 @@ namespace Flavor_Vault.Controllers
         }
 
         [HttpPost("addRating")]
-        public async Task<IActionResult> SubmitRating([FromBody] RatingDTO ratingDto)
+        public async Task<IActionResult> SubmitRating([FromBody] RatingWithoutIdDTO ratingDto)
         {
             var success = await _ratingService.SubmitRatingAsync(ratingDto);
             if (!success)
