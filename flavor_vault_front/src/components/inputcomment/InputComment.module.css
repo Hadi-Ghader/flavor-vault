@@ -1,0 +1,49 @@
+.commentInputContainer {
+  display: flex;
+  flex-direction: column;
+  margin: 1rem 0;
+}
+
+.commentLabel {
+  font-size: 1rem;
+  color: var(--main-green);
+  margin-bottom: 0.5rem;
+}
+
+.commentInput {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--main-green);
+  border-radius: 0.5rem;
+  background-color: var(--accent-color);
+  color: var(--side-color);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.commentInput:focus {
+  border-color: var(--side-color);
+}
+
+.commentButton {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--main-green);
+  color: var(--side-color);
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.commentButton:active,
+.commentButton:focus,
+.commentButton:hover,
+.commentButton:focus-within {
+  background-color: var(--accent-color) !important;
+  color: var(--side-color);
+  border: none;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5);
+}

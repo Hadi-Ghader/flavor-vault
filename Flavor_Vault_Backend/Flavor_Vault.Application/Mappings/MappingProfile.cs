@@ -17,6 +17,9 @@ namespace Flavor_Vault.Application.Mappings
                 .ForMember(dest => dest.IsLiked, opt => opt.Ignore());
             CreateMap<LikeDTO, Like>().ReverseMap();
             CreateMap<FavoriteDTO, Favorite>().ReverseMap();
+            CreateMap<CommentWithoutIdDTO, Comment>().ReverseMap();
+            CreateMap<CommentsWithUserDTO,  CommentsWithUser>().ReverseMap();
+            CreateMap<RatingDTO, Rating>().ReverseMap();
         }
     }
 }

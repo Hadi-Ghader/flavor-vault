@@ -16,6 +16,8 @@ import LikeCounter from "../likecounter/LikeCounter";
 import LikeButton from "../likebutton/LikeButton";
 import { Favorite } from "../../models/Favorite";
 import FavoriteButton from "../favoritebutton/FavoriteButton";
+import CommentSection from "../commentssection/CommentsSection";
+import InputComment from "../inputcomment/InputComment";
 
 const RecipeDetails: React.FC = () => {
   const { recipeId } = useParams<{ recipeId: string }>();
@@ -170,46 +172,54 @@ const RecipeDetails: React.FC = () => {
   }
 
   return (
-    <div className={classes.mainContainer}>
+    <div>
       <NavBar />
-      {alert && <Alert variant={alert.variant}>{alert.message}</Alert>}
-      {recipeWithLike && (
-        <Row className={classes.customRow}>
-          <Col xs={12} sm={12} md={12} lg={6} className={classes.imageCol}>
-            <div className={classes.imageContainer}>
-              <img
-                className={classes.image}
-                src={recipeWithLike.recipe.imageUrl}
-                alt={recipeWithLike.recipe.title}
-              />
-            </div>
-          </Col>
-
-          <Col xs={12} sm={12} md={12} lg={6} className={classes.contentCol}>
-            <div className={classes.contentContainer}>
-              <h2 className={classes.recipeTitle}>
-                {recipeWithLike.recipe.title}
-              </h2>
-              <div className={classes.recipeBody}>
-                {recipeWithLike.recipe.body.map((item, index) => (
-                  <span key={index}>
-                    {item}
-                    <br />
-                  </span>
-                ))}
-              </div>
-              <LikeCounter likesCount={likesCount} />
-              <div className={classes.buttonContainer}>
-                <LikeButton isLiked={isLiked} onClick={handleLikeButton} />
-                <FavoriteButton
-                  isFavorite={isFavorite}
-                  onClick={handleFavoriteButton}
+      <div className={classes.mainContainer}>
+        {alert && <Alert variant={alert.variant}>{alert.message}</Alert>}
+        {recipeWithLike && (
+          <Row className={classes.customRow}>
+            <Col xs={12} sm={12} md={12} lg={6} className={classes.imageCol}>
+              <div className={classes.imageContainer}>
+                <img
+                  className={classes.image}
+                  src={recipeWithLike.recipe.imageUrl}
+                  alt={recipeWithLike.recipe.title}
                 />
               </div>
-            </div>
+            </Col>
+
+            <Col xs={12} sm={12} md={12} lg={6} className={classes.contentCol}>
+              <div className={classes.contentContainer}>
+                <h2 className={classes.recipeTitle}>
+                  {recipeWithLike.recipe.title}
+                </h2>
+                <div className={classes.recipeBody}>
+                  {recipeWithLike.recipe.body.map((item, index) => (
+                    <span key={index}>
+                      {item}
+                      <br />
+                    </span>
+                  ))}
+                </div>
+                <CommentSection />
+                <LikeCounter likesCount={likesCount} />
+                <div className={classes.buttonContainer}>
+                  <LikeButton isLiked={isLiked} onClick={handleLikeButton} />
+                  <FavoriteButton
+                    isFavorite={isFavorite}
+                    onClick={handleFavoriteButton}
+                  />
+                </div>
+              </div>
+            </Col>
+          </Row>
+        )}
+        <Row>
+          <Col>
+            <InputComment />
           </Col>
         </Row>
-      )}
+      </div>
     </div>
   );
 };

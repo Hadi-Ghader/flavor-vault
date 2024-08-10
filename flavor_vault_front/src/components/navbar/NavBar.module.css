@@ -14,14 +14,14 @@
 }
 
 .navItem:hover {
-    color: var(--accent-color);
+  color: var(--accent-color);
 }
 
 .mainNavItem {
-    color: var(--side-color);
-    font-weight: bold;
+  color: var(--side-color);
+  font-weight: bold;
 }
 .mainNavItem:hover {
-    color: var(--side-color);
-    cursor: default;
+  color: var(--side-color);
+  cursor: default;
 }

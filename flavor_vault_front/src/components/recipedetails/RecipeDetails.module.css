@@ -1,3 +1,10 @@
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-top: 15rem;
+}
+
 .imageCol {
   flex: 1;
   display: flex;
@@ -5,9 +12,9 @@
 }
 
 .imageContainer {
-  width: 60rem;
+  max-width: 60rem;
+  margin-left: 2rem;
   height: 100%;
-  overflow: hidden;
   border-radius: 0.625rem 0 0 0.625rem;
   box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.3);
   background-color: var(--accent-color);
@@ -17,6 +24,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 0.625rem 0 0 0.625rem;
 }
 
 .contentCol {
@@ -28,10 +36,10 @@
 
 .contentContainer {
   padding: 1.25rem;
+  margin-right: 2rem;
   background-color: var(--accent-color);
   border-radius: 0 0.625rem 0.625rem 0;
   color: var(--side-color);
-  width: 100%;
   box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.3);
 }
 
@@ -50,6 +58,38 @@
   gap: 0.625rem;
 }
 
+@media (min-width: 992px) {
+  .customRow {
+    flex-direction: row;
+  }
+
+  .imageCol {
+    justify-content: flex-start;
+  }
+
+  .imageContainer {
+    margin-left: 2rem;
+    margin-bottom: 0;
+    max-width: 60rem;
+    height: 100%;
+    border-radius: 0.625rem 0 0 0.625rem;
+  }
+
+  .contentCol {
+    flex-direction: column;
+    margin-top: 0;
+  }
+
+  .contentContainer {
+    border-radius: 0 0.625rem 0.625rem 0;
+    width: 95%;
+  }
+
+  .buttonContainer {
+    justify-content: flex-start;
+  }
+}
+
 @media (max-width: 992px) {
   .customRow {
     flex-direction: column;
@@ -57,17 +97,42 @@
   }
 
   .imageContainer {
-    width: 30rem;
+    width: 100%;
     height: auto;
-    border-radius: 0.625rem 0.625rem 0 0;
+    margin-left: 0;
+    margin-bottom: 1rem;
+    border-radius: 0.625rem;
   }
 
   .contentContainer {
-    border-radius: 0 0 0.625rem 0.625rem;
+    border-radius: 0.625rem;
     text-align: center;
+    width: 100%;
+    margin-left: 2rem;
   }
 
   .buttonContainer {
     justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .contentContainer {
+    padding: 1rem;
+  }
+
+  .recipeTitle {
+    font-size: 1.5rem;
+  }
+
+  .recipeBody {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .buttonContainer {
+    justify-content: center;
+    flex-direction: column; /* Stack buttons vertically on small screens */
   }
 }
