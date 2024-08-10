@@ -1,0 +1,51 @@
+.commentBody {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  padding: 0.625rem;
+  border: 0.063rem solid #ddd;
+  border-radius: 0.313rem;
+  margin-bottom: 0.625rem;
+}
+
+ul.paginationContainer a {
+  background-color: var(--main-green);
+  color: var(--side-color);
+}
+
+ul.paginationContainer a:active,
+ul.paginationContainer a:focus,
+ul.paginationContainer a:hover,
+ul.paginationContainer a:focus-within {
+  background-color: var(--accent-color) !important;
+  color: var(--side-color) !important;
+  border: none;
+  box-shadow: none;
+}
+
+.deleteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--main-green);
+  color: var(--side-color);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.deleteButton:active,
+.deleteButton:focus,
+.deleteButton:hover,
+.deleteButton:focus-within {
+  background-color: var(--accent-color) !important;
+  color: var(--side-color);
+  border: none;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5);
+}

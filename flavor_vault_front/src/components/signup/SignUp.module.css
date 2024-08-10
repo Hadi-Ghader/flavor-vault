@@ -75,16 +75,15 @@ body {
   border: none;
 }
 
-.formSubmitButton:hover {
-  background-color: var(--accent-color);
-  border: none;
-}
-
-.formSubmitButton:active {
+.formSubmitButton:active,
+.formSubmitButton:focus,
+.formSubmitButton:hover,
+.formSubmitButton:focus-within {
   background-color: var(--accent-color) !important;
+  color: var(--side-color);
   border: none;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5);
 }
-
 .backgroundVideo {
   position: absolute;
   top: 0;
