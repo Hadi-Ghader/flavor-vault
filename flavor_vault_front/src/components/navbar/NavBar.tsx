@@ -32,11 +32,14 @@ const NavBar: React.FC = () => {
             Flavour Vault
           </Nav.Link>
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Toggle aria-controls="basic-navbar-nav" className="me-3" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="/" className={classes.navItem}>
               Home Page
+            </Nav.Link>
+            <Nav.Link href="/favorites" className={classes.navItem}>
+              Your Favorites
             </Nav.Link>
             <Nav.Link href="/recipeupload" className={classes.navItem}>
               Upload Recipe

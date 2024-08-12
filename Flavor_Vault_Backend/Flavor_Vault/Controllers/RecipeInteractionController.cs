@@ -4,6 +4,7 @@ using Flavor_Vault.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading.Tasks;
 
 namespace Flavor_Vault.Controllers
 {
@@ -78,7 +79,6 @@ namespace Flavor_Vault.Controllers
                 return StatusCode(500, new { Message = "An error occurred while processing your request.", Details = exception.Message });
             }
         }
-
 
         [Authorize]
         [HttpPost("addLike")]
@@ -167,29 +167,72 @@ namespace Flavor_Vault.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost("addRating")]
-        public async Task<IActionResult> SubmitRating([FromBody] RatingWithoutIdDTO ratingDto)
+        public async Task<IActionResult> AddRatingAsync([FromBody] RatingWithoutIdDTO ratingDto)
         {
-            var success = await _ratingService.SubmitRatingAsync(ratingDto);
-            if (!success)
+            try
             {
-                return BadRequest("You have already rated this recipe.");
+                if (ratingDto == null || ratingDto.UserId <= 0 || ratingDto.RecipeId <= 0 || ratingDto.StarsCount <= 0)
+                {
+                    return BadRequest("Invalid rating data.");
+                }
+
+                var success = await _ratingService.SubmitRatingAsync(ratingDto);
+                if (!success)
+                {
+                    return BadRequest("You have already rated this recipe.");
+                }
+                return Ok("Rating added successfully.");
             }
-            return Ok("Rating submitted successfully.");
+            catch (Exception exception)
+            {
+                return StatusCode(500, new { Message = "An error occurred while processing your request.", Details = exception.Message });
+            }
         }
 
+        [Authorize]
         [HttpGet("userHasRated")]
-        public async Task<IActionResult> HasUserRated(int userId, int recipeId)
+        public async Task<IActionResult> HasUserRatedAsync(int userId, int recipeId)
         {
-            var hasRated = await _ratingService.HasUserRatedAsync(userId, recipeId);
-            return Ok(hasRated);
+            try
+            {
+                var hasRated = await _ratingService.HasUserRatedAsync(userId, recipeId);
+                return Ok(hasRated);
+            }
+            catch (Exception exception)
+            {
+                return StatusCode(500, new { Message = "An error occurred while processing your request.", Details = exception.Message });
+            }
         }
 
         [HttpGet("averageRating")]
-        public async Task<IActionResult> GetAverageRating(int recipeId)
+        public async Task<IActionResult> GetAverageRatingAsync(int recipeId)
         {
-            var averageRating = await _ratingService.GetAverageRatingAsync(recipeId);
-            return Ok(averageRating);
+            try
+            {
+                var averageRating = await _ratingService.GetAverageRatingAsync(recipeId);
+                return Ok(averageRating);
+            }
+            catch (Exception exception)
+            {
+                return StatusCode(500, new { Message = "An error occurred while processing your request.", Details = exception.Message });
+            }
+        }
+
+        [Authorize]
+        [HttpGet("getUserRatingForRecipe")]
+        public async Task<IActionResult> GetRatingByUserForRecipeAsync(int userId, int recipeId)
+        {
+            try
+            {
+                var starsCount = await _ratingService.GetAverageRatingAsyncCountAsync(userId, recipeId);
+                return Ok(starsCount);
+            }
+            catch (Exception exception)
+            {
+                return StatusCode(500, new { Message = "An error occurred while processing your request.", Details = exception.Message });
+            }
         }
     }
 }

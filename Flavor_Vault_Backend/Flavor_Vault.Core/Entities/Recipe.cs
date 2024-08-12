@@ -8,5 +8,7 @@
         public int UserId { get; set; }
         public int CategoryId { get; set; }
         public string ImageUrl {  get; set; }
+        public bool? IsLiked { get; set; }
+        public bool? IsFavorited { get; set; }
     } 
 }

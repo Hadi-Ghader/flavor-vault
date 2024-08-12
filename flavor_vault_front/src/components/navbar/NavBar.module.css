@@ -25,3 +25,9 @@
   color: var(--side-color);
   cursor: default;
 }
+
+@media (max-width: 380px) {
+  .navbarContainer button {
+    margin: right 10rem;
+  }
+}

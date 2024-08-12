@@ -5,5 +5,6 @@ export type Recipe = {
     userId: number,
     categoryId: number
     imageUrl: string
-    isLiked?: boolean
+    isLiked?: boolean,
+    isFavorited?: boolean
 };

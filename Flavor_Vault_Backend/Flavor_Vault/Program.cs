@@ -59,7 +59,13 @@ namespace Flavor_Vault
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
             builder.Services.AddScoped<IUserRepository, UserRepository>(provider => new UserRepository(connectionString!));
-            builder.Services.AddScoped<IRecipeRepository, RecipeRepository>(provider => new RecipeRepository(connectionString!));
+            builder.Services.AddScoped<IRecipeRepository, RecipeRepository>(provider =>
+                                                                                    new RecipeRepository(
+                                                                                        connectionString!,
+                                                                                        provider.GetRequiredService<ILikeRepository>(),
+                                                                                        provider.GetRequiredService<IFavoriteRepository>()
+                                                                                        )
+                                                                                    );
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>(provider => new CategoryRepository(connectionString!));
             builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>(provider => new FavoriteRepository(connectionString!));
             builder.Services.AddScoped<ILikeRepository, LikeRepository>(provider => new LikeRepository(connectionString!));

@@ -37,5 +37,10 @@ namespace Flavor_Vault.Application.Services
         {
             return await _ratingRepository.GetAverageRatingAsync(recipeId);
         }
+
+        public async Task<int> GetAverageRatingAsyncCountAsync(int userId, int recipeId)
+        {
+            return await _ratingRepository.GetRatingByUserForRecipeAsync(userId, recipeId);
+        }
     }
 }

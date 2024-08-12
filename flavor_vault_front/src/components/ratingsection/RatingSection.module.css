@@ -1,0 +1,12 @@
+.ratingContainer {
+  margin-top: 0.4rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.averageRatingText {
+  color: var(--main-green);
+  margin-right: 0.4rem;
+}
