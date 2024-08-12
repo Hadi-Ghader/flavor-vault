@@ -7,6 +7,7 @@ import Login from "./components/login/Login";
 import LandingPage from "./components/landingpage/LandingPage";
 import RecipeUpload from "./components/recipeupload/RecipeUpload";
 import RecipeDetails from "./components/recipedetails/RecipeDetails";
+import Favorites from "./components/favorites/Favorites";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Routes>
           <Route index element={<LandingPage />} />
           <Route path="recipeupload" element={<RecipeUpload />} />
+          <Route path="favorites" element={<Favorites />} />
           <Route path="signup" element={<SignUp />} />
           <Route path="login" element={<Login />} />
           <Route path="recipe/:recipeId" element={<RecipeDetails />} />

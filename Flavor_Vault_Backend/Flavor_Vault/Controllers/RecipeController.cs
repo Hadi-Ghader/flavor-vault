@@ -19,6 +19,14 @@ namespace Flavor_Vault.Controllers
             _likeService = likeService;
         }
 
+        [HttpGet("getAllRecipes")]
+        public async Task<IActionResult> GetAllRecipesWithUserInteractionsAsync(int userId)
+        {
+            var recipes = await _recipeService.GetAllRecipesWithUserInteractionsAsync(userId);
+
+            return Ok(recipes);
+        }
+
         [HttpGet("getRecipeById")]
         public async Task<IActionResult> GetRecipeById(int id)
         {

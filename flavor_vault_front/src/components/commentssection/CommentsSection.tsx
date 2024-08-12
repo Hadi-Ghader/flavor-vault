@@ -4,7 +4,14 @@ import instanceJwt from "../../helper/AxiosInstanceJWT";
 import secureLocalStorage from "react-secure-storage";
 import { jwtDecode } from "jwt-decode";
 
-import { Alert, Spinner, Pagination, Button, Toast } from "react-bootstrap";
+import {
+  Alert,
+  Spinner,
+  Pagination,
+  Button,
+  Toast,
+  ToastContainer,
+} from "react-bootstrap";
 import { MdDelete } from "react-icons/md";
 
 import classes from "./CommentsSection.module.css";
@@ -149,15 +156,17 @@ const CommentSection: React.FC = () => {
           )}
         </Pagination>
       )}
-      <Toast
-        onClose={() => setToast((prev) => ({ ...prev, show: false }))}
-        show={toast.show}
-        delay={3000}
-        autohide
-        className={`position-fixed bottom-0 end-0 m-3 bg-${toast.variant}`}
-      >
-        <Toast.Body>{toast.message}</Toast.Body>
-      </Toast>
+      <ToastContainer position="top-end" className="p-3">
+        <Toast
+          onClose={() => setToast((prev) => ({ ...prev, show: false }))}
+          show={toast.show}
+          delay={3000}
+          autohide
+          className={`position-fixed bottom-0 end-0 m-3 bg-${toast.variant}`}
+        >
+          <Toast.Body>{toast.message}</Toast.Body>
+        </Toast>
+      </ToastContainer>
     </div>
   );
 };

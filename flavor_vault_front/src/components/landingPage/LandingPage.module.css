@@ -172,7 +172,6 @@
   }
   .card {
     width: 100%;
-    margin-right: 2rem;
     margin-bottom: 2rem;
   }
   .searchBar {
@@ -183,7 +182,6 @@
 @media (max-width: 576px) {
   .card {
     width: 100%;
-    margin-bottom: 2rem;
   }
   .searchBar {
     width: 20rem;
@@ -193,7 +191,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    margin-left: 2rem;
   }
   .modalContainer {
     display: flex;
@@ -204,7 +201,7 @@
   }
 }
 
-@media (max-width: 380px) {
+@media (max-width: 568px) {
   .card {
     width: 100%;
     margin-bottom: 2rem;
@@ -212,10 +209,14 @@
   .searchBar {
     width: 15rem;
   }
-  .mainContainer {
+  .cardsContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+  }
+  .mainContainer {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
   }
 }

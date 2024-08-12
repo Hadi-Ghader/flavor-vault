@@ -8,10 +8,14 @@ namespace Flavor_Vault.Infrastructure.Repositories
     public class RecipeRepository : IRecipeRepository
     {
         private readonly string _connectionString;
+        private readonly ILikeRepository _likeRepository;
+        private readonly IFavoriteRepository _favoriteRepository;
 
-        public RecipeRepository(string connectionString)
+        public RecipeRepository(string connectionString, ILikeRepository likeRepository, IFavoriteRepository favoriteRepository)
         {
             _connectionString = connectionString;
+            _likeRepository = likeRepository;
+            _favoriteRepository = favoriteRepository;
         }
 
         private IDbConnection Connection => new NpgsqlConnection(_connectionString);
@@ -22,6 +26,23 @@ namespace Flavor_Vault.Infrastructure.Repositories
             string query = @"SELECT id, title, body, image_url FROM public.""recipes"" ";
 
             var recipes =  await dbconnection.QueryAsync<Recipe>(query);
+            return recipes;
+        }
+
+        public async Task<IEnumerable<Recipe>> GetAllRecipesWithUserInteractionsAsync(int userId)
+        {
+            using var dbconnection = Connection;
+
+            const string query = @"SELECT id AS Id, title AS Title, body AS Body, user_id AS UserId, category_id AS CategoryId, image_url as imageUrl
+                                   FROM public.""recipes"";";
+            var recipes = await dbconnection.QueryAsync<Recipe>(query);
+
+            foreach (var recipe in recipes)
+            {
+                recipe.IsLiked = await _likeRepository.UserHasLikedAsync(userId, recipe.Id);
+                recipe.IsFavorited = await _favoriteRepository.UserHasFavoritedAsync(userId, recipe.Id);
+            }
+
             return recipes;
         }
 

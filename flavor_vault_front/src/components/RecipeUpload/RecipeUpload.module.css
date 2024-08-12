@@ -61,15 +61,6 @@
   border: none;
 }
 
-.categoryDropDown:focus,
-.categoryDropDown:active,
-.categoryDropDown:hover,
-.categoryDropDown:focus-visible {
-  background-color: var(--main-green);
-  border: none;
-  box-shadow: none;
-}
-
 .categoryDropDown:first-child:active {
   background-color: var(--accent-color);
   border: none;
@@ -78,6 +69,16 @@
 
 .categoryDropDown .show {
   background-color: var(--main-green);
+}
+
+.categoryDropDown:active,
+.categoryDropDown:focus,
+.categoryDropDown:hover,
+.categoryDropDown:focus-within {
+  background-color: var(--accent-color) !important;
+  color: var(--side-color);
+  border: none;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5);
 }
 
 .categoryDropDownItem:hover,
@@ -92,14 +93,14 @@
   border: none;
 }
 
-.formSubmitButton:hover {
-  background-color: var(--accent-color);
-  border: none;
-}
-
-.formSubmitButton:active {
+.formSubmitButton:active,
+.formSubmitButton:focus,
+.formSubmitButton:hover,
+.formSubmitButton:focus-within {
   background-color: var(--accent-color) !important;
+  color: var(--side-color);
   border: none;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5);
 }
 
 .loading {
@@ -114,10 +115,14 @@
   margin-bottom: 1rem;
 }
 
-.customImageUpload:hover {
-  transition: background-color 0.3s ease;
-  background-color: var(--accent-color);
-  cursor: pointer;
+.customImageUpload:active,
+.customImageUpload:focus,
+.customImageUpload:hover,
+.customImageUpload:focus-within {
+  background-color: var(--accent-color) !important;
+  color: var(--side-color);
+  border: none;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5);
 }
 
 .inputImage {

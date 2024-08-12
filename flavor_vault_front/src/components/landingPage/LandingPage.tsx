@@ -5,47 +5,75 @@ import secureLocalStorage from "react-secure-storage";
 import instanceJwt from "../../helper/AxiosInstanceJWT";
 
 import {
-  Container,
   Row,
   Col,
   Form,
   Modal,
   Button,
-  Alert,
+  // Alert,
   Spinner,
   Card,
   OverlayTrigger,
   Tooltip,
+  Container,
 } from "react-bootstrap";
-import { BsStar } from "react-icons/bs";
 import { FaArrowCircleRight, FaRegHeart } from "react-icons/fa";
 import { FaHeart, FaBookmark } from "react-icons/fa6";
+import { FaRegBookmark } from "react-icons/fa";
 
 import NavBar from "../navbar/NavBar";
 
 import classes from "./LandingPage.module.css";
 
-import { UserFavorite } from "../../models/UserFavorite";
 import { UserToken } from "../../models/UserToken";
 import { Recipe } from "../../models/Recipe";
 import { Like } from "../../models/Like";
+import instance from "../../helper/AxiosInstance";
+import { Favorite } from "../../models/Favorite";
 
 const LandingPage: React.FC = () => {
   const userId = useRef<number | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [imageLoading, setImageLoading] = useState<{ [key: number]: boolean }>(
     {}
   );
   const [searchResults, setSearchResults] = useState<Recipe[]>([]);
-  const [userFavorites, setUserFavorites] = useState<UserFavorite[]>([]);
   const [modal, showModal] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [alert, setAlert] = useState<{
-    type: string;
-    message: string;
-  } | null>(null);
+  // const [alert, setAlert] = useState<{
+  //   type: string;
+  //   message: string;
+  // } | null>(null);
 
   const navigate = useNavigate();
+
+  const getAllRecipesWithUserInteraction = useCallback(
+    (userId: number | null) => {
+      if (userId !== null) {
+        instance
+          .get(`Recipe/getAllRecipes?userId=${userId}`)
+          .then((response) => {
+            setIsLoading(false);
+            setRecipes(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        instance
+          .get("Recipe/getAllRecipes")
+          .then((response) => {
+            setIsLoading(false);
+            setRecipes(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
+    []
+  );
 
   const handleGoToRecipe = useCallback(
     (id: number) => {
@@ -76,98 +104,100 @@ const LandingPage: React.FC = () => {
     }
   }, []);
 
-  const handleRemoveFromFavoritesButton = useCallback((recipeId: number) => {
-    instanceJwt
-      .delete(
-        `Favorite/removeFavorite?userId=${userId.current}&recipeId=${recipeId}`
-      )
-      .then((response) => {
-        setUserFavorites((prevFavorites) =>
-          prevFavorites.filter((fav) => fav.recipeId !== recipeId)
-        );
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+  const handleFavoritesButton = useCallback(
+    (userId: number, recipeId: number, isFavorited: boolean) => {
+      if (!isFavorited) {
+        let userFavorite: Favorite = {
+          userId: userId,
+          recipeId: recipeId,
+        };
+        instanceJwt
+          .post("Favorite/addUserFavorite", userFavorite)
+          .then((response) => {
+            setRecipes((prevRecipes) =>
+              prevRecipes.map((rec) =>
+                rec.id === recipeId ? { ...rec, isFavorited: true } : rec
+              )
+            );
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        instanceJwt
+          .delete(
+            `Favorite/removeFavorite?userId=${userId}&recipeId=${recipeId}`
+          )
+          .then((response) => {
+            setRecipes((prevRecipes) =>
+              prevRecipes.map((rec) =>
+                rec.id === recipeId ? { ...rec, isFavorited: false } : rec
+              )
+            );
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
+    []
+  );
 
-  const handleLikeButton = useCallback((recipeId: number, liked: boolean) => {
-    if (!liked) {
-      let like: Like = {
-        UserId: userId.current!,
-        RecipeId: recipeId,
-      };
+  const handleLikeButton = useCallback(
+    (userId: number, recipeId: number, isLiked: boolean) => {
+      if (!isLiked) {
+        let like: Like = {
+          UserId: userId,
+          RecipeId: recipeId,
+        };
 
-      instanceJwt
-        .post("RecipeInteraction/addLike", like)
-        .then((response) => {
-          setUserFavorites((prevFavorites) =>
-            prevFavorites.map((fav) =>
-              fav.recipeId === recipeId ? { ...fav, isLiked: true } : fav
-            )
-          );
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      instanceJwt
-        .delete(
-          `RecipeInteraction/removeLike?userId=${userId.current}&recipeId=${recipeId}`
-        )
-        .then((response) => {
-          setUserFavorites((prevFavorites) =>
-            prevFavorites.map((fav) =>
-              fav.recipeId === recipeId ? { ...fav, isLiked: false } : fav
-            )
-          );
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  }, []);
+        instanceJwt
+          .post("RecipeInteraction/addLike", like)
+          .then((response) => {
+            setRecipes((prevRecipes) =>
+              prevRecipes.map((rec) =>
+                rec.id === recipeId ? { ...rec, isLiked: true } : rec
+              )
+            );
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        instanceJwt
+          .delete(
+            `RecipeInteraction/removeLike?userId=${userId}&recipeId=${recipeId}`
+          )
+          .then((response) => {
+            setRecipes((prevRecipes) =>
+              prevRecipes.map((rec) =>
+                rec.id === recipeId ? { ...rec, isLiked: false } : rec
+              )
+            );
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
+    []
+  );
 
   const handleCloseModal = useCallback(() => {
     showModal(false);
   }, []);
 
-  const getUserFavorites = useCallback(() => {
-    if (userId.current != null) {
-      instanceJwt
-        .get(`Favorite/getUserFavoritesWithLikes?userId=${userId.current}`)
-        .then((response) => {
-          setUserFavorites(response.data);
-          setIsLoading(false);
-        })
-        .catch((exception) => {
-          console.log(exception);
-          setIsLoading(false);
-        });
-    } else {
-      setIsLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
     const token = secureLocalStorage.getItem("token") as string;
     if (typeof token === "string") {
-      try {
-        const decodedToken: UserToken = jwtDecode(token);
-        userId.current = decodedToken.nameid;
-        getUserFavorites();
-      } catch (error) {
-        console.log("Invalid Token", error);
-        setIsLoading(false);
-      }
+      const decodedToken: UserToken = jwtDecode(token);
+      userId.current = decodedToken.nameid;
+      getAllRecipesWithUserInteraction(userId.current);
     } else {
-      setAlert({
-        type: "danger",
-        message: "Please login to view your favorites!",
-      });
       setIsLoading(false);
+      getAllRecipesWithUserInteraction(null);
     }
-  }, [getUserFavorites]);
+  }, [getAllRecipesWithUserInteraction]);
 
   if (isLoading) {
     return (
@@ -200,7 +230,7 @@ const LandingPage: React.FC = () => {
                 return (
                   <Row key={index} className="mb-4">
                     {searchResults.slice(index, index + 4).map((result) => (
-                      <Col key={result.id} xs={12} sm={6} md={4} lg={3}>
+                      <Col key={result.id} xs={12} sm={6} md={6} lg={3}>
                         <Card className={classes.card}>
                           {imageLoading[result.id!] ? (
                             <Spinner
@@ -281,170 +311,140 @@ const LandingPage: React.FC = () => {
         />
       </Form>
 
-      {alert && (
-        <Alert className={classes.alert} variant={alert.type}>
-          {alert.message}
-        </Alert>
-      )}
+      <Container className={classes.cardsContainer}>
+        {recipes.length > 0 && (
+          <div>
+            {recipes.map((recipe, index) => {
+              if (index % 4 === 0) {
+                return (
+                  <Row key={index} className="mb-4">
+                    {recipes.slice(index, index + 4).map((rec, idx) => (
+                      <Col key={rec.id} xs={12} sm={6} md={4} lg={3}>
+                        <Card className={classes.card}>
+                          {imageLoading[rec.id!] ? (
+                            <Spinner
+                              animation="border"
+                              role="status"
+                              className={classes.loading}
+                            />
+                          ) : (
+                            <Card.Img
+                              className={classes.cardImage}
+                              variant="top"
+                              src={rec.imageUrl}
+                              onLoad={() => handleImageLoad(rec.id!)}
+                            />
+                          )}
 
-      {!alert && (
-        <div>
-          {userFavorites.length > 0 ? (
-            <h2 className={classes.heading}>
-              Your Favorites{" "}
-              <div className={classes.icon}>
-                <BsStar color="var(--main-green)" />
-              </div>
-            </h2>
-          ) : (
-            <h2 className={classes.heading}>
-              You don't have any favorites. Start by adding some!{" "}
-            </h2>
-          )}
+                          <Card.Body className={classes.cardBody}>
+                            <Card.Title>{rec.title}</Card.Title>
+                            <Card.Text className={classes.cardText}>
+                              {rec.body.length > 3 ? (
+                                <div>
+                                  {rec.body.slice(0, 3).map((item, index) => (
+                                    <span key={index}>
+                                      {item}
+                                      <br />
+                                    </span>
+                                  ))}
+                                  <span className={classes.ellipsis}>
+                                    ...more
+                                  </span>
+                                </div>
+                              ) : (
+                                rec.body.map((item, index) => (
+                                  <span key={index}>
+                                    {item}
+                                    <br />
+                                  </span>
+                                ))
+                              )}
+                            </Card.Text>
+                            <div className={classes.buttonContainer}>
+                              <OverlayTrigger
+                                placement="top"
+                                overlay={
+                                  <Tooltip id={`tooltip-like-${rec.id}`}>
+                                    {rec.isLiked ? "Unlike" : "Like"}
+                                  </Tooltip>
+                                }
+                              >
+                                <Button
+                                  onClick={() => {
+                                    handleLikeButton(
+                                      rec.userId!,
+                                      rec.id!,
+                                      rec.isLiked!
+                                    );
+                                  }}
+                                  className={classes.recipeButton}
+                                >
+                                  {rec.isLiked ? <FaHeart /> : <FaRegHeart />}
+                                </Button>
+                              </OverlayTrigger>
 
-          <Container className={classes.cardsContainer}>
-            {userFavorites.length > 0 && (
-              <div>
-                {userFavorites.map((favorites, index) => {
-                  if (index % 4 === 0) {
-                    return (
-                      <Row key={index} className="mb-4">
-                        {userFavorites
-                          .slice(index, index + 4)
-                          .map((fav, idx) => (
-                            <Col
-                              key={fav.recipeId}
-                              xs={12}
-                              sm={6}
-                              md={4}
-                              lg={3}
-                            >
-                              <Card className={classes.card}>
-                                {imageLoading[fav.recipeId] ? (
-                                  <Spinner
-                                    animation="border"
-                                    role="status"
-                                    className={classes.loading}
-                                  />
-                                ) : (
-                                  <Card.Img
-                                    className={classes.cardImage}
-                                    variant="top"
-                                    src={fav.imageUrl}
-                                    onLoad={() => handleImageLoad(fav.id)}
-                                  />
-                                )}
+                              <OverlayTrigger
+                                placement="top"
+                                overlay={
+                                  <Tooltip id={`tooltip-bookmark-${rec.id}`}>
+                                    {rec.isFavorited
+                                      ? "Remove from favorites"
+                                      : "Add to favorites"}
+                                  </Tooltip>
+                                }
+                              >
+                                <Button
+                                  onClick={() => {
+                                    handleFavoritesButton(
+                                      rec.userId!,
+                                      rec.id!,
+                                      rec.isFavorited!
+                                    );
+                                  }}
+                                  className={classes.recipeButton}
+                                >
+                                  {rec.isFavorited ? (
+                                    <FaBookmark />
+                                  ) : (
+                                    <FaRegBookmark />
+                                  )}
+                                </Button>
+                              </OverlayTrigger>
 
-                                <Card.Body className={classes.cardBody}>
-                                  <Card.Title>{fav.title}</Card.Title>
-                                  <Card.Text className={classes.cardText}>
-                                    {fav.body.length > 3 ? (
-                                      <div>
-                                        {fav.body
-                                          .slice(0, 3)
-                                          .map((item, index) => (
-                                            <span key={index}>
-                                              {item}
-                                              <br />
-                                            </span>
-                                          ))}
-                                        <span className={classes.ellipsis}>
-                                          ...more
-                                        </span>
-                                      </div>
-                                    ) : (
-                                      fav.body.map((item, index) => (
-                                        <span key={index}>
-                                          {item}
-                                          <br />
-                                        </span>
-                                      ))
-                                    )}
-                                  </Card.Text>
-                                  <div className={classes.buttonContainer}>
-                                    <OverlayTrigger
-                                      placement="top"
-                                      overlay={
-                                        <Tooltip
-                                          id={`tooltip-like-${fav.recipeId}`}
-                                        >
-                                          {fav.isLiked ? "Unlike" : "Like"}
-                                        </Tooltip>
-                                      }
-                                    >
-                                      <Button
-                                        onClick={() => {
-                                          handleLikeButton(
-                                            fav.recipeId,
-                                            fav.isLiked
-                                          );
-                                        }}
-                                        className={classes.recipeButton}
-                                      >
-                                        {fav.isLiked ? (
-                                          <FaHeart />
-                                        ) : (
-                                          <FaRegHeart />
-                                        )}
-                                      </Button>
-                                    </OverlayTrigger>
+                              <OverlayTrigger
+                                placement="top"
+                                overlay={
+                                  <Tooltip
+                                    id={`tooltip-go-to-recipe-${rec.id}`}
+                                  >
+                                    Go to recipe
+                                  </Tooltip>
+                                }
+                              >
+                                <Button
+                                  onClick={() => {
+                                    handleGoToRecipe(rec.id!);
+                                  }}
+                                  className={classes.recipeButton}
+                                >
+                                  <FaArrowCircleRight />
+                                </Button>
+                              </OverlayTrigger>
+                            </div>
+                          </Card.Body>
+                        </Card>
+                      </Col>
+                    ))}
+                  </Row>
+                );
+              }
+              return null;
+            })}
+          </div>
+        )}
+      </Container>
 
-                                    <OverlayTrigger
-                                      placement="top"
-                                      overlay={
-                                        <Tooltip
-                                          id={`tooltip-bookmark-${fav.recipeId}`}
-                                        >
-                                          Remove
-                                        </Tooltip>
-                                      }
-                                    >
-                                      <Button
-                                        onClick={() => {
-                                          handleRemoveFromFavoritesButton(
-                                            fav.recipeId
-                                          );
-                                        }}
-                                        className={classes.recipeButton}
-                                      >
-                                        <FaBookmark />
-                                      </Button>
-                                    </OverlayTrigger>
-
-                                    <OverlayTrigger
-                                      placement="top"
-                                      overlay={
-                                        <Tooltip
-                                          id={`tooltip-go-to-recipe-${fav.recipeId}`}
-                                        >
-                                          Go to recipe
-                                        </Tooltip>
-                                      }
-                                    >
-                                      <Button
-                                        onClick={() => {
-                                          handleGoToRecipe(fav.recipeId);
-                                        }}
-                                        className={classes.recipeButton}
-                                      >
-                                        <FaArrowCircleRight />
-                                      </Button>
-                                    </OverlayTrigger>
-                                  </div>
-                                </Card.Body>
-                              </Card>
-                            </Col>
-                          ))}
-                      </Row>
-                    );
-                  }
-                  return null;
-                })}
-              </div>
-            )}
-          </Container>
-        </div>
-      )}
+      <h2 className={classes.heading}>All Recipes</h2>
     </div>
   );
 };

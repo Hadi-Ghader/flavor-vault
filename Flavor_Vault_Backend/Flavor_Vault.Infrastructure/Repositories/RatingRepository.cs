@@ -20,7 +20,7 @@ namespace Flavor_Vault.Infrastructure.Repositories
         public async Task<bool> AddRatingAsync(Rating rating)
         {
             var dbconnection = Connection;
-            var query = @"INSERT INTO public.""ratings"" (stars_count, user_id, recipe_id) 
+            const string query = @"INSERT INTO public.""ratings"" (stars_count, user_id, recipe_id) 
                 VALUES (@StarsCount, @UserId, @RecipeId);";
 
             var result = await dbconnection.ExecuteAsync(query, new 
@@ -36,17 +36,32 @@ namespace Flavor_Vault.Infrastructure.Repositories
         public async Task<double> GetAverageRatingAsync(int recipeId)
         {
             var dbconnection = Connection;
-            var query = @"SELECT AVG(CAST(stars_count AS FLOAT)) FROM public.""ratings""
+            const string query = @"SELECT AVG(CAST(stars_count AS FLOAT)) FROM public.""ratings""
                             WHERE recipe_id = @RecipeId;";
 
             var average = await dbconnection.ExecuteScalarAsync<double>(query, new { RecipeId = recipeId });
             return average;
         }
 
+        public async Task<int> GetRatingByUserForRecipeAsync(int userId, int recipeId)
+        {
+            var dbconnection = Connection;
+            const string query = @"SELECT stars_count FROM public.""ratings"" 
+                                WHERE user_id = @UserId AND recipe_id = @RecipeId ;";
+
+            var starsCount = await dbconnection.QueryFirstOrDefaultAsync<int>(query, new
+            {
+                UserId = userId,
+                RecipeId = recipeId
+            });
+
+            return starsCount;
+        }
+
         public async Task<bool> HasUserRatedAsync(int userId, int recipeId)
         {
             var dbconnection = Connection;
-            var query = @"SELECT COUNT(1) FROM public.""ratings"" 
+            const string query = @"SELECT COUNT(1) FROM public.""ratings"" 
                         WHERE user_id = @UserId AND recipe_id = @RecipeId";
 
             var count = await dbconnection.ExecuteScalarAsync<int>(query, new 

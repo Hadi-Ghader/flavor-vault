@@ -15,6 +15,14 @@ namespace Flavor_Vault.Application.Services
             _mapper = recipeMapper;
         }
 
+        public async Task<IEnumerable<RecipeDTO>> GetAllRecipesWithUserInteractionsAsync(int userId)
+        {
+            var recipes = await _recipeRepository.GetAllRecipesWithUserInteractionsAsync(userId);
+            var recipesDTO = _mapper.Map<IEnumerable<RecipeDTO>>(recipes);
+
+            return recipesDTO;
+        }
+
         public async Task<RecipeDTO> GetRecipeByIdAsync(int id)
         {
             var recipe = await _recipeRepository.GetRecipeByIdAsync(id);

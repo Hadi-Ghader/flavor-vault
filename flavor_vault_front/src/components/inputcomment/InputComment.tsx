@@ -101,7 +101,7 @@ const InputComment: React.FC = () => {
         </p>
       )}
 
-      <ToastContainer position="bottom-end" className="p-3">
+      <ToastContainer position="top-end" className="p-3">
         <Toast
           show={toast.show}
           onClose={() => setToast((prev) => ({ ...prev, show: false }))}

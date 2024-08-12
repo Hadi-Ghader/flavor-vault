@@ -9,8 +9,7 @@ namespace Flavor_Vault.Application.Mappings
         public MappingProfile()
         {
             CreateMap<UserSignUpDTO, User>().ReverseMap();
-            CreateMap<Recipe, RecipeDTO>()
-                .ForMember(dest => dest.IsLiked, opt => opt.Ignore());
+            CreateMap<Recipe, RecipeDTO>().ReverseMap();
             CreateMap<RecipeDTO, Recipe>();
             CreateMap<CategoryDTO, Category>().ReverseMap();
             CreateMap<FavoriteRecipeByUserDTO, FavoriteRecipeByUser>().ReverseMap()

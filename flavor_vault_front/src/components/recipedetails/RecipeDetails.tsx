@@ -18,10 +18,12 @@ import { Favorite } from "../../models/Favorite";
 import FavoriteButton from "../favoritebutton/FavoriteButton";
 import CommentSection from "../commentssection/CommentsSection";
 import InputComment from "../inputcomment/InputComment";
+import RatingSection from "../ratingsection/RatingSection";
 
 const RecipeDetails: React.FC = () => {
   const { recipeId } = useParams<{ recipeId: string }>();
   const userId = useRef<number | null>(null);
+  const recipeIdNumber = Number(recipeId);
   const [likesCount, setLikesCount] = useState<number>(0);
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
@@ -208,6 +210,10 @@ const RecipeDetails: React.FC = () => {
                   <FavoriteButton
                     isFavorite={isFavorite}
                     onClick={handleFavoriteButton}
+                  />
+                  <RatingSection
+                    recipeId={recipeIdNumber}
+                    userId={userId.current!}
                   />
                 </div>
               </div>
