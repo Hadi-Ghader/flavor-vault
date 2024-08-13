@@ -151,6 +151,22 @@
   }
 }
 
+@media (max-width: 640px) {
+  .recipeFormContainer {
+    padding: 2rem;
+    border-radius: 1rem;
+    width: 30rem;
+  }
+
+  .recipeTitleInput {
+    height: 2rem;
+  }
+
+  .recipeTitleInput {
+    width: 100%;
+  }
+}
+
 @media (max-width: 480px) {
   .recipeFormContainer {
     padding: 2rem;

@@ -311,6 +311,8 @@ const LandingPage: React.FC = () => {
         />
       </Form>
 
+      <h2 className={classes.heading}>All Recipes</h2>
+
       <Container className={classes.cardsContainer}>
         {recipes.length > 0 && (
           <div>
