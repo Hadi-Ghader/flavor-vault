@@ -42,38 +42,42 @@ const Login: React.FC = () => {
     [navigate]
   );
 
-  const handleLogInSubmit = useCallback(
-    (event: React.FormEvent<HTMLButtonElement>) => {
-      event.preventDefault();
+  const handleLogInSubmit = useCallback(() => {
+    const emailPattern =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-      const emailPattern =
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let email = inputEmailRef.current!.value;
+    let password = inputPasswordRef.current!.value;
 
-      let email = inputEmailRef.current!.value;
-      let password = inputPasswordRef.current!.value;
+    if (email === "" || password === "") {
+      let message = "Please fill out the following fields: ";
+      if (email === "") message += "Email ";
+      if (password === "") message += "Password ";
+      setAlert(message.trim());
+      return;
+    }
 
-      if (email === "" || password === "") {
-        let message = "Please fill out the following fields: ";
-        if (email === "") message += "Email ";
-        if (password === "") message += "Password ";
-        setAlert(message.trim());
-        return;
+    if (!emailPattern.test(email)) {
+      setAlert("Please enter a valid email address");
+      return;
+    }
+
+    const user: UserLogin = {
+      email,
+      password,
+    };
+
+    postUser(user);
+  }, [postUser]);
+
+  const handleSubmitKey = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        handleLogInSubmit();
       }
-
-      if (!emailPattern.test(email)) {
-        setAlert("Please enter a valid email address");
-        return;
-      }
-
-      const user: UserLogin = {
-        email,
-        password,
-      };
-
-      postUser(user);
     },
-
-    [postUser]
+    [handleLogInSubmit]
   );
 
   return (
@@ -132,6 +136,7 @@ const Login: React.FC = () => {
             type="password"
             placeholder="Enter your password"
             ref={inputPasswordRef}
+            onKeyDown={handleSubmitKey}
           />
         </Form.Group>
 

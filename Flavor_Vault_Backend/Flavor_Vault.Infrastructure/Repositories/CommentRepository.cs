@@ -24,18 +24,20 @@ namespace Flavor_Vault.Infrastructure.Repositories
             return await dbConnection.ExecuteScalarAsync<int>(countQuery);
         }
 
-        public async Task<IEnumerable<CommentsWithUser>> GetPaginatedCommentsAsync(int page, int pageSize)
+        public async Task<IEnumerable<CommentsWithUser>> GetPaginatedCommentsAsync(int recipeId, int page, int pageSize)
         {
             using var dbconnection = Connection;
             const string query = @"
                                     SELECT c.id, c.body, c.user_id AS userId, c.recipe_id AS recipeId, u.name
                                     FROM public.""comments"" c
                                     JOIN users u ON u.id =  c.user_id
+                                    WHERE c.recipe_id = @RecipeId
                                     ORDER BY c.id
                                     OFFSET @Offset LIMIT @Limit;";
 
             var commentsWithUser = await dbconnection.QueryAsync<CommentsWithUser>(query, new
             {
+                RecipeId = recipeId,
                 Offset = (page - 1) * pageSize,
                 Limit = pageSize
             });

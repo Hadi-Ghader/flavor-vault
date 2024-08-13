@@ -18,8 +18,10 @@ import classes from "./CommentsSection.module.css";
 
 import { CommentsWithUser } from "../../models/CommentsWithUser";
 import { UserToken } from "../../models/UserToken";
+import { useParams } from "react-router-dom";
 
 const CommentSection: React.FC = () => {
+  const { recipeId } = useParams<{ recipeId: string }>();
   const [comments, setComments] = useState<CommentsWithUser[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [alert, setAlert] = useState<{
@@ -57,34 +59,37 @@ const CommentSection: React.FC = () => {
       }
     }
 
-    instanceJwt
-      .get(
-        `RecipeInteraction/getComments?page=${currentPage}&pageSize=${commentsPerPage}`
-      )
-      .then((response) => {
-        if (response.data && Array.isArray(response.data.comments)) {
-          setComments(response.data.comments);
-          setTotalComments(response.data.totalCount);
-        } else {
+    if (typeof recipeId === "string") {
+      const rId = parseInt(recipeId);
+      instanceJwt
+        .get(
+          `RecipeInteraction/getComments?recipeId=${rId}&page=${currentPage}&pageSize=${commentsPerPage}`
+        )
+        .then((response) => {
+          if (response.data && Array.isArray(response.data.comments)) {
+            setComments(response.data.comments);
+            setTotalComments(response.data.totalCount);
+          } else {
+            setComments([]);
+            setTotalComments(0);
+            setAlert({
+              variant: "danger",
+              message: "Unexpected API response format",
+            });
+          }
+          setIsLoading(false);
+        })
+        .catch((error) => {
           setComments([]);
           setTotalComments(0);
           setAlert({
             variant: "danger",
-            message: "Unexpected API response format",
+            message: error.response.data.message || "Failed to load comments.",
           });
-        }
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        setComments([]);
-        setTotalComments(0);
-        setAlert({
-          variant: "danger",
-          message: error.response?.data || "Failed to load comments.",
+          setIsLoading(false);
         });
-        setIsLoading(false);
-      });
-  }, [currentPage, commentsPerPage]);
+    }
+  }, [currentPage, commentsPerPage, recipeId]);
 
   const handleDeleteButton = useCallback((commentId: number) => {
     instanceJwt

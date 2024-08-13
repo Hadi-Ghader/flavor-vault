@@ -85,8 +85,8 @@ namespace Flavor_Vault.Controllers
         {
             try
             {
-                await _recipeService.InsertRecipeAsync(recipeDTO);
-                return Ok("Recipe inserted successfully");
+                var insertedRecipe = await _recipeService.InsertRecipeAsync(recipeDTO);
+                return Ok(new { Message = "Recipe inserted successfully", Recipe = insertedRecipe });
             }
             catch (Exception exception)
             {

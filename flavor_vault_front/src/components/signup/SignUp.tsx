@@ -44,46 +44,50 @@ const SignUp: React.FC = () => {
     [navigate]
   );
 
-  const handleSignUpSubmit = useCallback(
-    (event: React.FormEvent<HTMLButtonElement>) => {
-      event.preventDefault();
+  const handleSignUpSubmit = useCallback(() => {
+    const emailPattern =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-      const emailPattern =
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let name = inputNameRef.current!.value;
+    let email = inputEmailRef.current!.value;
+    let password = inputPasswordRef.current!.value;
 
-      let name = inputNameRef.current!.value;
-      let email = inputEmailRef.current!.value;
-      let password = inputPasswordRef.current!.value;
+    if (name === "" || email === "" || password === "") {
+      let message = "Please fill out the following fields: ";
+      if (name === "") message += "Name ";
+      if (email === "") message += "Email ";
+      if (password === "") message += "Password ";
+      setAlert(message.trim());
+      return;
+    }
 
-      if (name === "" || email === "" || password === "") {
-        let message = "Please fill out the following fields: ";
-        if (name === "") message += "Name ";
-        if (email === "") message += "Email ";
-        if (password === "") message += "Password ";
-        setAlert(message.trim());
-        return;
+    if (!emailPattern.test(email)) {
+      setAlert("Please enter a valid email address");
+      return;
+    }
+
+    if (password.length < 8) {
+      setAlert("Password must have at least 8 characters");
+      return;
+    }
+
+    const user: UserSignUp = {
+      name,
+      email,
+      password,
+    };
+
+    postUser(user);
+  }, [postUser]);
+
+  const handleSubmitKey = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        handleSignUpSubmit();
       }
-
-      if (!emailPattern.test(email)) {
-        setAlert("Please enter a valid email address");
-        return;
-      }
-
-      if (password.length < 8) {
-        setAlert("Password must have at least 8 characters");
-        return;
-      }
-
-      const user: UserSignUp = {
-        name,
-        email,
-        password,
-      };
-
-      postUser(user);
     },
-
-    [postUser]
+    [handleSignUpSubmit]
   );
 
   return (
@@ -166,6 +170,7 @@ const SignUp: React.FC = () => {
             type="password"
             placeholder="Enter your password"
             ref={inputPasswordRef}
+            onKeyDown={handleSubmitKey}
           />
         </Form.Group>
 

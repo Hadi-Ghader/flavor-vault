@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+
 import { jwtDecode } from "jwt-decode";
 import secureLocalStorage from "react-secure-storage";
 import {
@@ -22,6 +23,7 @@ import { Recipe } from "../../models/Recipe";
 import instanceJwt from "../../helper/AxiosInstanceJWT";
 import instance from "../../helper/AxiosInstance";
 import NoTokenComponent from "../notokencomponent/NoTokenComponent";
+import { useNavigate } from "react-router-dom";
 
 const RecipeUpload: React.FC = () => {
   const [hasToken, setHasToken] = useState<boolean>(false);
@@ -30,13 +32,15 @@ const RecipeUpload: React.FC = () => {
   const [imageName, setImageName] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<Category>({
     id: 0,
-    name: "Selected Category",
+    name: "Select Category",
   });
   const userId = useRef<number>();
   const [response, setResponse] = useState<{
     variant: string;
     message: string;
   } | null>(null);
+
+  const navigate = useNavigate();
 
   const inputTitleRef = useRef<HTMLInputElement | null>(null);
   const inputBodyRef = useRef<HTMLTextAreaElement | null>(null);
@@ -52,38 +56,6 @@ const RecipeUpload: React.FC = () => {
       .catch((error) => {
         setResponse({ variant: "danger", message: `${error.response.data}` });
       });
-  }, []);
-
-  useEffect(() => {
-    const token = secureLocalStorage.getItem("token") as string;
-
-    if (typeof token === "string") {
-      try {
-        setHasToken(true);
-        const decodedToken: UserToken = jwtDecode(token);
-
-        userId.current = decodedToken.nameid;
-        getAllCategories();
-      } catch (error) {
-        console.error("Invalid token:", error);
-      }
-    } else {
-      setIsLoading(false);
-    }
-  }, [getAllCategories]);
-
-  const handleSelectedCategory = useCallback(
-    (categoryId: number, categoryName: string) => {
-      setSelectedCategory({ id: categoryId, name: categoryName });
-    },
-    []
-  );
-
-  const handleFileChange = useCallback(() => {
-    if (imageInputRef.current && imageInputRef.current.files?.length) {
-      const file = imageInputRef.current.files[0];
-      setImageName(file.name);
-    }
   }, []);
 
   const handleRecipeUpload = useCallback(async () => {
@@ -125,7 +97,8 @@ const RecipeUpload: React.FC = () => {
     instanceJwt
       .post("Recipe/uploadrecipe", recipe)
       .then((response) => {
-        setResponse({ variant: "success", message: response.data });
+        navigate(`/recipe/${response.data.recipe.id}`);
+        setResponse({ variant: "success", message: response.data.message });
         inputTitleRef.current!.value = "";
         inputBodyRef.current!.value = "";
         imageInputRef.current!.value = "";
@@ -136,7 +109,46 @@ const RecipeUpload: React.FC = () => {
         const { details } = exception.response.data;
         setResponse({ variant: "danger", message: details });
       });
-  }, [selectedCategory.id, userId, inputTitleRef, inputBodyRef, imageInputRef]);
+  }, [
+    selectedCategory.id,
+    userId,
+    inputTitleRef,
+    inputBodyRef,
+    imageInputRef,
+    navigate,
+  ]);
+
+  useEffect(() => {
+    const token = secureLocalStorage.getItem("token") as string;
+
+    if (typeof token === "string") {
+      try {
+        setHasToken(true);
+        const decodedToken: UserToken = jwtDecode(token);
+
+        userId.current = decodedToken.nameid;
+        getAllCategories();
+      } catch (error) {
+        console.error("Invalid token:", error);
+      }
+    } else {
+      setIsLoading(false);
+    }
+  }, [getAllCategories]);
+
+  const handleSelectedCategory = useCallback(
+    (categoryId: number, categoryName: string) => {
+      setSelectedCategory({ id: categoryId, name: categoryName });
+    },
+    []
+  );
+
+  const handleFileChange = useCallback(() => {
+    if (imageInputRef.current && imageInputRef.current.files?.length) {
+      const file = imageInputRef.current.files[0];
+      setImageName(file.name);
+    }
+  }, []);
 
   if (isLoading) {
     return (
@@ -220,13 +232,11 @@ const RecipeUpload: React.FC = () => {
               >
                 <div>Upload Image </div>
               </label>
-
               {imageName && (
                 <div className={classes.imageName}>
                   Selected Image: {imageName}
                 </div>
               )}
-
               <input
                 type="file"
                 accept="image/*"

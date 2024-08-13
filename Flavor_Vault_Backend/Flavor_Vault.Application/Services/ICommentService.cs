@@ -5,7 +5,7 @@ namespace Flavor_Vault.Application.Services
 {
     public interface ICommentService
     {
-        public Task<(IEnumerable<CommentsWithUserDTO> Comments, int TotalCount)> GetPaginatedCommentsAsync(int page, int pageSize);
+        public Task<(IEnumerable<CommentsWithUserDTO> Comments, int TotalCount)> GetPaginatedCommentsAsync(int recipeId, int page, int pageSize);
         public Task AddCommentAsync(CommentWithoutIdDTO commentWithoutIdDTO);
         public Task DeleteCommentAsync(int id);
     }

@@ -12,8 +12,7 @@ namespace Flavor_Vault.Application.Mappings
             CreateMap<Recipe, RecipeDTO>().ReverseMap();
             CreateMap<RecipeDTO, Recipe>();
             CreateMap<CategoryDTO, Category>().ReverseMap();
-            CreateMap<FavoriteRecipeByUserDTO, FavoriteRecipeByUser>().ReverseMap()
-                .ForMember(dest => dest.IsLiked, opt => opt.Ignore());
+            CreateMap<FavoriteRecipeByUserDTO, FavoriteRecipeByUser>().ReverseMap();
             CreateMap<LikeDTO, Like>().ReverseMap();
             CreateMap<FavoriteDTO, Favorite>().ReverseMap();
             CreateMap<CommentWithoutIdDTO, Comment>().ReverseMap();

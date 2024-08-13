@@ -58,13 +58,14 @@ namespace Flavor_Vault.Infrastructure.Repositories
             return result!;
         }
 
-        public async Task InsertRecipeAsync(Recipe recipe)
+        public async Task<Recipe> InsertRecipeAsync(Recipe recipe)
         {
             using var dbConnection = Connection;
             const string query = @"INSERT INTO public.""recipes""(title, body, user_id, category_id, image_url) 
-                                VALUES(@Title, @Body, @UserId, @CategoryId, @ImageUrl) ";
+                                VALUES(@Title, @Body, @UserId, @CategoryId, @ImageUrl)
+                                RETURNING id AS Id, title, body, user_id AS UserId, category_id AS CategoryId, image_url AS ImageUrl;";
 
-            await dbConnection.ExecuteAsync(query, new
+            var insertedRecipe = await dbConnection.QuerySingleAsync<Recipe>(query, new
             {
                 Title = recipe.Title,
                 Body = recipe.Body,
@@ -72,6 +73,8 @@ namespace Flavor_Vault.Infrastructure.Repositories
                 CategoryId = recipe.CategoryId,
                 ImageUrl = recipe.ImageUrl
             });
+
+            return insertedRecipe;
         }
 
         public async Task<IEnumerable<Recipe>> SearchRecipesAsync(string searchQuery)

@@ -62,11 +62,11 @@ namespace Flavor_Vault.Controllers
         }
 
         [HttpGet("getComments")]
-        public async Task<IActionResult> GetPaginatedCommentsAsync(int page = 1, int pageSize = 5)
+        public async Task<IActionResult> GetPaginatedCommentsAsync(int recipeId, int page = 1, int pageSize = 5)
         {
             try
             {
-                var (comments, totalCount) = await _commentService.GetPaginatedCommentsAsync(page, pageSize);
+                var (comments, totalCount) = await _commentService.GetPaginatedCommentsAsync(recipeId, page, pageSize);
 
                 return Ok(new
                 {
