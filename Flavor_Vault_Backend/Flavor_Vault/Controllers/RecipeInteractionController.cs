@@ -197,6 +197,11 @@ namespace Flavor_Vault.Controllers
         {
             try
             {
+                if (userId <= 0 || recipeId <= 0)
+                {
+                    return BadRequest(new { Message = "Invalid rating data." });
+                }
+
                 var hasRated = await _ratingService.HasUserRatedAsync(userId, recipeId);
                 return Ok(hasRated);
             }
@@ -211,6 +216,11 @@ namespace Flavor_Vault.Controllers
         {
             try
             {
+                if (recipeId <= 0)
+                {
+                    return BadRequest(new { Message = "Invalid rating data." });
+                }
+
                 var averageRating = await _ratingService.GetAverageRatingAsync(recipeId);
                 return Ok(averageRating);
             }
@@ -226,6 +236,11 @@ namespace Flavor_Vault.Controllers
         {
             try
             {
+                if (userId <= 0 || recipeId <= 0)
+                {
+                    return BadRequest(new { Message = "Invalid rating data." });
+                }
+
                 var starsCount = await _ratingService.GetAverageRatingAsyncCountAsync(userId, recipeId);
                 return Ok(starsCount);
             }
