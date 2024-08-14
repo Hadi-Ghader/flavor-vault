@@ -326,8 +326,7 @@ const LandingPage: React.FC = () => {
           ref={searchRef}
         />
       </Form>
-
-      <h2 className={classes.heading}>All recipes</h2>
+      <h2 className={classes.heading}>All Recipes</h2>
 
       <Container className={classes.cardsContainer}>
         {recipes.length > 0 && (
