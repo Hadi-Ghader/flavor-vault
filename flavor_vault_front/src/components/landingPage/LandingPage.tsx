@@ -18,6 +18,7 @@ import {
   Tooltip,
   Container,
 } from "react-bootstrap";
+
 import { FaArrowCircleRight, FaRegHeart } from "react-icons/fa";
 import { FaHeart, FaBookmark } from "react-icons/fa6";
 import { FaRegBookmark } from "react-icons/fa";
@@ -379,6 +380,7 @@ const LandingPage: React.FC = () => {
                             </Card.Text>
                             <div className={classes.buttonContainer}>
                               <OverlayTrigger
+                                key={rec.id}
                                 placement="top"
                                 overlay={
                                   <Tooltip id={`tooltip-like-${rec.id}`}>
@@ -401,6 +403,7 @@ const LandingPage: React.FC = () => {
                               </OverlayTrigger>
 
                               <OverlayTrigger
+                                key={rec.id}
                                 placement="top"
                                 overlay={
                                   <Tooltip id={`tooltip-bookmark-${rec.id}`}>
@@ -429,6 +432,7 @@ const LandingPage: React.FC = () => {
                               </OverlayTrigger>
 
                               <OverlayTrigger
+                                key={rec.id}
                                 placement="top"
                                 overlay={
                                   <Tooltip
