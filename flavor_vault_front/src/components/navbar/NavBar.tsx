@@ -4,6 +4,10 @@ import Navbar from "react-bootstrap/Navbar";
 
 import secureLocalStorage from "react-secure-storage";
 
+import { IoHomeSharp } from "react-icons/io5";
+import { FaStar } from "react-icons/fa";
+import { FaUpload } from "react-icons/fa6";
+
 import classes from "./NavBar.module.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -36,13 +40,16 @@ const NavBar: React.FC = () => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="/" className={classes.navItem}>
-              Home Page
+              <span className={classes.navText}>Home Page</span>
+              <IoHomeSharp />
             </Nav.Link>
             <Nav.Link href="/favorites" className={classes.navItem}>
-              Your Favorites
+              <span className={classes.navText}>Your Favorites</span>
+              <FaStar />
             </Nav.Link>
             <Nav.Link href="/recipeupload" className={classes.navItem}>
-              Upload Recipe
+              <span className={classes.navText}>Upload Recipe</span>
+              <FaUpload />
             </Nav.Link>
           </Nav>
           <Nav className="ml-auto">

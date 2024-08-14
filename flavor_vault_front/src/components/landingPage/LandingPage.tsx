@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import secureLocalStorage from "react-secure-storage";
 import instanceJwt from "../../helper/AxiosInstanceJWT";
+import debounce from "lodash.debounce";
 
 import {
   Row,
@@ -17,6 +18,7 @@ import {
   Tooltip,
   Container,
 } from "react-bootstrap";
+
 import { FaArrowCircleRight, FaRegHeart } from "react-icons/fa";
 import { FaHeart, FaBookmark } from "react-icons/fa6";
 import { FaRegBookmark } from "react-icons/fa";
@@ -86,13 +88,15 @@ const LandingPage: React.FC = () => {
     setImageLoading((prevLoading) => ({ ...prevLoading, [id]: false }));
   }, []);
 
-  const handleSearch = useCallback((event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const query = searchRef.current!.value;
-    if (searchRef.current!.value !== null) {
-      instanceJwt
+  const fetchSearchResults = useCallback(
+    debounce((query: string) => {
+      if (!query) return;
+      setIsLoading(true);
+
+      instance
         .get(`Recipe/search?query=${query}`)
         .then((response) => {
+          console.log(response.data);
           setSearchResults(response.data);
           setIsLoading(false);
           showModal(true);
@@ -101,8 +105,20 @@ const LandingPage: React.FC = () => {
           console.log("Error searching recipes", error);
           setIsLoading(false);
         });
-    }
-  }, []);
+    }, 300),
+    []
+  );
+
+  const handleSearch = useCallback(
+    (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      const query = searchRef.current!.value;
+      if (searchRef.current!.value !== null) {
+        fetchSearchResults(query);
+      }
+    },
+    [fetchSearchResults]
+  );
 
   const handleFavoritesButton = useCallback(
     (userId: number, recipeId: number, isFavorited: boolean) => {
@@ -300,17 +316,16 @@ const LandingPage: React.FC = () => {
         </Modal.Footer>
       </Modal>
 
-      <Form onSubmit={handleSearch} className="d-flex">
+      <Form onChange={handleSearch} className="d-flex">
         <Form.Control
           id="search"
-          type="search"
+          type="text"
           placeholder="Search for a recipe"
           className={`${classes.searchBar} me-2`}
           aria-label="Search"
           ref={searchRef}
         />
       </Form>
-
       <h2 className={classes.heading}>All Recipes</h2>
 
       <Container className={classes.cardsContainer}>
@@ -364,6 +379,7 @@ const LandingPage: React.FC = () => {
                             </Card.Text>
                             <div className={classes.buttonContainer}>
                               <OverlayTrigger
+                                key={rec.id}
                                 placement="top"
                                 overlay={
                                   <Tooltip id={`tooltip-like-${rec.id}`}>
@@ -386,6 +402,7 @@ const LandingPage: React.FC = () => {
                               </OverlayTrigger>
 
                               <OverlayTrigger
+                                key={rec.id}
                                 placement="top"
                                 overlay={
                                   <Tooltip id={`tooltip-bookmark-${rec.id}`}>
@@ -414,6 +431,7 @@ const LandingPage: React.FC = () => {
                               </OverlayTrigger>
 
                               <OverlayTrigger
+                                key={rec.id}
                                 placement="top"
                                 overlay={
                                   <Tooltip

@@ -17,7 +17,7 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({
       placement="top"
       overlay={
         <Tooltip id={`tooltip-like`}>
-          {isFavorite ? "Add to favorites" : "Remove from favorites"}
+          {isFavorite ? "Remove from favorites" : "Add to favorites"}
         </Tooltip>
       }
     >

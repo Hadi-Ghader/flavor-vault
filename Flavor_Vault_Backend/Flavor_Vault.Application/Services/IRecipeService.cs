@@ -7,7 +7,7 @@ namespace Flavor_Vault.Application.Services
         public Task<IEnumerable<RecipeDTO>> GetAllRecipesWithUserInteractionsAsync(int userId);
         public void ValidateRecipe(RecipeDTO recipeDTO);
         public Task<RecipeDTO> GetRecipeByIdAsync(int id);
-        public Task InsertRecipeAsync(RecipeDTO recipe);
+        public Task<RecipeDTO> InsertRecipeAsync(RecipeDTO recipe);
         public Task<IEnumerable<RecipeDTO>> SearchRecipesAsync(string query);
     }
 }

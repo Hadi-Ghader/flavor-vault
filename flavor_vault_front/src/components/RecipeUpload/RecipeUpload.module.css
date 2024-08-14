@@ -9,7 +9,7 @@
 }
 
 .recipeFormContainer {
-  background-color: white;
+  background-color: var(--side-color);
   height: 50%;
   width: 40rem;
   border-radius: 2rem;
@@ -113,6 +113,7 @@
   border-radius: 0.5rem;
   color: var(--side-color);
   margin-bottom: 1rem;
+  overflow: hidden;
 }
 
 .customImageUpload:active,
@@ -123,6 +124,7 @@
   color: var(--side-color);
   border: none;
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5);
+  cursor: pointer;
 }
 
 .inputImage {

@@ -51,13 +51,15 @@ namespace Flavor_Vault.Application.Services
             }
         }
 
-        public async Task InsertRecipeAsync(RecipeDTO recipeDTO)
+        public async Task<RecipeDTO> InsertRecipeAsync(RecipeDTO recipeDTO)
         {
             ValidateRecipe(recipeDTO);
 
             var recipe = _mapper.Map<Recipe>(recipeDTO);
 
-            await _recipeRepository.InsertRecipeAsync(recipe);
+            var insertedRecipe = await _recipeRepository.InsertRecipeAsync(recipe);
+
+            return _mapper.Map<RecipeDTO>(insertedRecipe);
         }
 
         public async Task<IEnumerable<RecipeDTO>> SearchRecipesAsync(string query)

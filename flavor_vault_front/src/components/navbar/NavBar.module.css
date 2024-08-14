@@ -9,7 +9,15 @@
   margin-left: auto;
 }
 
+.navText {
+  margin-right: 0.5rem;
+}
+
 .navItem {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   color: var(--side-color);
 }
 
