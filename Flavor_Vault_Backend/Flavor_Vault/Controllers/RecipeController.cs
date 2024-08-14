@@ -22,9 +22,15 @@ namespace Flavor_Vault.Controllers
         [HttpGet("getAllRecipes")]
         public async Task<IActionResult> GetAllRecipesWithUserInteractionsAsync(int userId)
         {
-            var recipes = await _recipeService.GetAllRecipesWithUserInteractionsAsync(userId);
+            try {
+                var recipes = await _recipeService.GetAllRecipesWithUserInteractionsAsync(userId);
 
-            return Ok(recipes);
+                return Ok(recipes);
+            }
+            catch (Exception exception)
+            {
+                return StatusCode(500, new { Message = "An error occurred while processing your request.", Details = exception.Message });
+            }
         }
 
         [HttpGet("getRecipeById")]
@@ -32,7 +38,7 @@ namespace Flavor_Vault.Controllers
         {
             if (id <= 0)
             {
-                return BadRequest("Recipe Id can not be less than or equal to zero");
+                return BadRequest("Recipe Id can not be less than or equal to zero.");
             }
 
             var recipe = await _recipeService.GetRecipeByIdAsync(id);
@@ -40,7 +46,7 @@ namespace Flavor_Vault.Controllers
 
             if (recipe == null)
             {
-                return NotFound("Can not find recipe");
+                return NotFound(new { Message = "Can not find recipe." });
             }
 
             try
@@ -64,7 +70,7 @@ namespace Flavor_Vault.Controllers
         {
             if (string.IsNullOrWhiteSpace(query))
             {
-                return BadRequest("Search query cannot be empty.");
+                return BadRequest(new { Message = "Search query cannot be empty."});
             }
 
             try
@@ -86,7 +92,7 @@ namespace Flavor_Vault.Controllers
             try
             {
                 var insertedRecipe = await _recipeService.InsertRecipeAsync(recipeDTO);
-                return Ok(new { Message = "Recipe inserted successfully", Recipe = insertedRecipe });
+                return Ok(new { Message = "Recipe inserted successfully.", Recipe = insertedRecipe });
             }
             catch (Exception exception)
             {

@@ -22,7 +22,7 @@ namespace Flavor_Vault.Controllers
         {
             if (userId <= 0)
             {
-                return BadRequest("user Id can not be less than or equal to zero");
+                return BadRequest(new { Message = "user Id can not be less than or equal to zero" });
             }
 
             try
@@ -41,7 +41,7 @@ namespace Flavor_Vault.Controllers
         {
             if (id <= 0)
             {
-                return BadRequest("user Id can not be less than or equal to zero");
+                return BadRequest(new { Message = "user Id can not be less than or equal to zero" });
             }
 
             try
@@ -66,7 +66,7 @@ namespace Flavor_Vault.Controllers
         {
             if (userId <= 0 || recipeId <= 0)
             {
-                return BadRequest("Invalid favorite data.");
+                return BadRequest(new { Message = "Invalid favorite data" });
             }
 
             var result = await _favoriteService.UserHasFavoritedAsync(userId, recipeId);
@@ -79,13 +79,13 @@ namespace Flavor_Vault.Controllers
         {
             if (favoriteDTO == null || favoriteDTO.UserId <= 0 || favoriteDTO.RecipeId <= 0)
             {
-                return BadRequest("Invalid favorite data.");
+                return BadRequest(new { Message = "Invalid favorite data" });
             }
 
             var result = await _favoriteService.InsertUserFavroiteAsync(favoriteDTO);
             if (!result)
             {
-                return Conflict("You have already added this recipe to your favorites.");
+                return Conflict(new { Message = "You have already added this recipe to your favorites." });
             }
 
             return Ok("Recipe liked successfully.");

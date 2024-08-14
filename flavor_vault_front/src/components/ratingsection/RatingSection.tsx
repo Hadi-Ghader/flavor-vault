@@ -38,7 +38,11 @@ const RatingSection: React.FC<RatingProps> = ({
         setRating(response.data);
       })
       .catch((error) => {
-        console.error("Failed to fetch rating:", error);
+        setToast({
+          show: true,
+          message: error.response.data.message || "Failed to get rating.",
+          variant: "error",
+        });
       });
 
     instanceJwt
@@ -47,7 +51,12 @@ const RatingSection: React.FC<RatingProps> = ({
         setAverageRating(response.data);
       })
       .catch((error) => {
-        console.log(error);
+        setToast({
+          show: true,
+          message:
+            error.response.data.message || "Failed to get average rating.",
+          variant: "error",
+        });
       });
   }, [recipeId, userId]);
 
@@ -72,7 +81,7 @@ const RatingSection: React.FC<RatingProps> = ({
         .catch((error) => {
           setToast({
             show: true,
-            message: error.response.data || "Failed to submit rating.",
+            message: error.response.data.message || "Failed to submit rating.",
             variant: "error",
           });
         });
@@ -93,6 +102,7 @@ const RatingSection: React.FC<RatingProps> = ({
           <Toast.Body className="text-white">{toast.message}</Toast.Body>
         </Toast>
       </ToastContainer>
+
       <div className={classes.ratingContainer}>
         <span className={classes.averageRatingText}>
           Average Rating: {averageRating}

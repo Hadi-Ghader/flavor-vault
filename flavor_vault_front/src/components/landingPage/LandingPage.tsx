@@ -11,7 +11,7 @@ import {
   Form,
   Modal,
   Button,
-  // Alert,
+  Alert,
   Spinner,
   Card,
   OverlayTrigger,
@@ -43,10 +43,10 @@ const LandingPage: React.FC = () => {
   const [searchResults, setSearchResults] = useState<Recipe[]>([]);
   const [modal, showModal] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  // const [alert, setAlert] = useState<{
-  //   type: string;
-  //   message: string;
-  // } | null>(null);
+  const [alert, setAlert] = useState<{
+    type: string;
+    message: string;
+  } | null>(null);
 
   const navigate = useNavigate();
 
@@ -56,21 +56,31 @@ const LandingPage: React.FC = () => {
         instance
           .get(`Recipe/getAllRecipes?userId=${userId}`)
           .then((response) => {
-            setIsLoading(false);
             setRecipes(response.data);
           })
           .catch((error) => {
-            console.log(error);
+            setAlert(
+              { type: "alert", message: error.response.data.message } ||
+                "Could not get recipes"
+            );
+          })
+          .finally(() => {
+            setIsLoading(false);
           });
       } else {
         instance
           .get("Recipe/getAllRecipes")
           .then((response) => {
-            setIsLoading(false);
             setRecipes(response.data);
           })
           .catch((error) => {
-            console.log(error);
+            setAlert(
+              { type: "alert", message: error.response.data.message } ||
+                "Could not get recipes"
+            );
+          })
+          .finally(() => {
+            setIsLoading(false);
           });
       }
     },
@@ -96,13 +106,16 @@ const LandingPage: React.FC = () => {
       instance
         .get(`Recipe/search?query=${query}`)
         .then((response) => {
-          console.log(response.data);
           setSearchResults(response.data);
-          setIsLoading(false);
           showModal(true);
         })
         .catch((error) => {
-          console.log("Error searching recipes", error);
+          setAlert(
+            { type: "alert", message: error.response.data.message } ||
+              "Could not get your search results"
+          );
+        })
+        .finally(() => {
           setIsLoading(false);
         });
     }, 300),
@@ -137,7 +150,13 @@ const LandingPage: React.FC = () => {
             );
           })
           .catch((error) => {
-            console.log(error);
+            setAlert(
+              { type: "alert", message: error.response.data.message } ||
+                "Could not add to favorites"
+            );
+          })
+          .finally(() => {
+            setIsLoading(false);
           });
       } else {
         instanceJwt
@@ -152,7 +171,13 @@ const LandingPage: React.FC = () => {
             );
           })
           .catch((error) => {
-            console.log(error);
+            setAlert(
+              { type: "alert", message: error.response.data.message } ||
+                "Could not remove from favorites"
+            );
+          })
+          .finally(() => {
+            setIsLoading(false);
           });
       }
     },
@@ -177,7 +202,13 @@ const LandingPage: React.FC = () => {
             );
           })
           .catch((error) => {
-            console.log(error);
+            setAlert(
+              { type: "alert", message: error.response.data.message } ||
+                "Could not add the like"
+            );
+          })
+          .finally(() => {
+            setIsLoading(false);
           });
       } else {
         instanceJwt
@@ -192,7 +223,13 @@ const LandingPage: React.FC = () => {
             );
           })
           .catch((error) => {
-            console.log(error);
+            setAlert(
+              { type: "alert", message: error.response.data.message } ||
+                "Could not delete the like"
+            );
+          })
+          .finally(() => {
+            setIsLoading(false);
           });
       }
     },
@@ -245,10 +282,16 @@ const LandingPage: React.FC = () => {
               if (index % 4 === 0) {
                 return (
                   <Row key={index} className="mb-4">
-                    {searchResults.slice(index, index + 4).map((result) => (
-                      <Col key={result.id} xs={12} sm={6} md={6} lg={3}>
+                    {searchResults.slice(index, index + 4).map((res) => (
+                      <Col
+                        key={`${res.id}-${index}`}
+                        xs={12}
+                        sm={6}
+                        md={6}
+                        lg={3}
+                      >
                         <Card className={classes.card}>
-                          {imageLoading[result.id!] ? (
+                          {imageLoading[res.id!] ? (
                             <Spinner
                               animation="border"
                               role="status"
@@ -258,29 +301,27 @@ const LandingPage: React.FC = () => {
                             <Card.Img
                               className={classes.cardImage}
                               variant="top"
-                              src={result.imageUrl}
-                              onLoad={() => handleImageLoad(result.id!)}
+                              src={res.imageUrl}
+                              onLoad={() => handleImageLoad(res.id!)}
                             />
                           )}
                           <Card.Body className={classes.cardBody}>
-                            <Card.Title>{result.title}</Card.Title>
+                            <Card.Title>{res.title}</Card.Title>
                             <Card.Text className={classes.cardText}>
-                              {result.body.length > 3 ? (
+                              {res.body.length > 3 ? (
                                 <div>
-                                  {result.body
-                                    .slice(0, 3)
-                                    .map((item, index) => (
-                                      <span key={index}>
-                                        {item}
-                                        <br />
-                                      </span>
-                                    ))}
+                                  {res.body.slice(0, 3).map((item, index) => (
+                                    <span key={index}>
+                                      {item}
+                                      <br />
+                                    </span>
+                                  ))}
                                   <span className={classes.ellipsis}>
                                     ...more
                                   </span>
                                 </div>
                               ) : (
-                                result.body.map((item, index) => (
+                                res.body.map((item, index) => (
                                   <span key={index}>
                                     {item}
                                     <br />
@@ -289,12 +330,26 @@ const LandingPage: React.FC = () => {
                               )}
                             </Card.Text>
                             <div className={classes.buttonContainer}>
-                              <Button
-                                onClick={() => handleGoToRecipe(result.id!)}
-                                className={classes.recipeButton}
+                              <OverlayTrigger
+                                key={`go-to-recipe-${res.id}`}
+                                placement="top"
+                                overlay={
+                                  <Tooltip
+                                    id={`tooltip-go-to-recipe-${res.id}`}
+                                  >
+                                    Go to recipe
+                                  </Tooltip>
+                                }
                               >
-                                <FaArrowCircleRight />
-                              </Button>
+                                <Button
+                                  onClick={() => {
+                                    handleGoToRecipe(res.id!);
+                                  }}
+                                  className={classes.recipeButton}
+                                >
+                                  <FaArrowCircleRight />
+                                </Button>
+                              </OverlayTrigger>
                             </div>
                           </Card.Body>
                         </Card>
@@ -316,6 +371,8 @@ const LandingPage: React.FC = () => {
         </Modal.Footer>
       </Modal>
 
+      {alert && <Alert variant={alert.type}>{alert.message}</Alert>}
+
       <Form onChange={handleSearch} className="d-flex">
         <Form.Control
           id="search"
@@ -326,6 +383,7 @@ const LandingPage: React.FC = () => {
           ref={searchRef}
         />
       </Form>
+
       <h2 className={classes.heading}>All Recipes</h2>
 
       <Container className={classes.cardsContainer}>
@@ -379,7 +437,7 @@ const LandingPage: React.FC = () => {
                             </Card.Text>
                             <div className={classes.buttonContainer}>
                               <OverlayTrigger
-                                key={rec.id}
+                                key={`like-${rec.id}-${idx}`}
                                 placement="top"
                                 overlay={
                                   <Tooltip id={`tooltip-like-${rec.id}`}>
@@ -402,7 +460,7 @@ const LandingPage: React.FC = () => {
                               </OverlayTrigger>
 
                               <OverlayTrigger
-                                key={rec.id}
+                                key={`bookmark-${rec.id}-${idx}`}
                                 placement="top"
                                 overlay={
                                   <Tooltip id={`tooltip-bookmark-${rec.id}`}>
@@ -431,7 +489,7 @@ const LandingPage: React.FC = () => {
                               </OverlayTrigger>
 
                               <OverlayTrigger
-                                key={rec.id}
+                                key={`go-to-recipe-${rec.id}-${idx}`}
                                 placement="top"
                                 overlay={
                                   <Tooltip

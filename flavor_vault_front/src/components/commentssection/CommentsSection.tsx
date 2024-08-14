@@ -11,6 +11,8 @@ import {
   Button,
   Toast,
   ToastContainer,
+  Tooltip,
+  OverlayTrigger,
 } from "react-bootstrap";
 import { MdDelete } from "react-icons/md";
 
@@ -25,7 +27,7 @@ const CommentSection: React.FC = () => {
   const [comments, setComments] = useState<CommentsWithUser[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [alert, setAlert] = useState<{
-    variant: string;
+    type: string;
     message: string;
   } | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -50,11 +52,14 @@ const CommentSection: React.FC = () => {
         if (typeof decodedToken.nameid === "string") {
           userId.current = parseInt(decodedToken.nameid);
         } else {
-          console.error("nameid is not a string", decodedToken.nameid);
+          setAlert({ type: "danger", message: "nameid is not a string." });
           userId.current = null;
         }
       } catch (error) {
-        console.error("Error decoding token", error);
+        setAlert({
+          type: "danger",
+          message: "An error occurred while decoding the token.",
+        });
         userId.current = null;
       }
     }
@@ -73,19 +78,20 @@ const CommentSection: React.FC = () => {
             setComments([]);
             setTotalComments(0);
             setAlert({
-              variant: "danger",
+              type: "danger",
               message: "Unexpected API response format",
             });
           }
-          setIsLoading(false);
         })
         .catch((error) => {
           setComments([]);
           setTotalComments(0);
           setAlert({
-            variant: "danger",
+            type: "danger",
             message: error.response.data.message || "Failed to load comments.",
           });
+        })
+        .finally(() => {
           setIsLoading(false);
         });
     }
@@ -121,7 +127,7 @@ const CommentSection: React.FC = () => {
 
   return (
     <div>
-      {alert && <Alert variant={alert.variant}>{alert.message}</Alert>}
+      {alert && <Alert variant={alert.type}>{alert.message}</Alert>}
       {comments.length > 0 ? (
         comments.map((comment) => (
           <div key={comment.id}>
@@ -130,12 +136,19 @@ const CommentSection: React.FC = () => {
               {comment.body}{" "}
               <span>
                 {userId.current === comment.userId && (
-                  <Button
-                    className={classes.deleteButton}
-                    onClick={() => handleDeleteButton(comment.id)}
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={
+                      <Tooltip id={`tooltip-like`}>Delete Comment</Tooltip>
+                    }
                   >
-                    <MdDelete />
-                  </Button>
+                    <Button
+                      onClick={() => handleDeleteButton(comment.id)}
+                      className={classes.deleteButton}
+                    >
+                      <MdDelete />
+                    </Button>
+                  </OverlayTrigger>
                 )}
               </span>
             </p>

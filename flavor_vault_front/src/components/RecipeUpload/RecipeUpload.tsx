@@ -35,8 +35,8 @@ const RecipeUpload: React.FC = () => {
     name: "Select Category",
   });
   const userId = useRef<number>();
-  const [response, setResponse] = useState<{
-    variant: string;
+  const [alert, setAlert] = useState<{
+    type: string;
     message: string;
   } | null>(null);
 
@@ -49,12 +49,17 @@ const RecipeUpload: React.FC = () => {
   const getAllCategories = useCallback(() => {
     instance
       .get<Category[]>("/Category/getallcategories")
-      .then((response) => {
-        setCategories(response.data);
-        setIsLoading(false);
+      .then((alert) => {
+        setCategories(alert.data);
       })
       .catch((error) => {
-        setResponse({ variant: "danger", message: `${error.response.data}` });
+        setAlert({
+          type: "danger",
+          message: error.response.data.message || "Could not get categories.",
+        });
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
@@ -69,7 +74,7 @@ const RecipeUpload: React.FC = () => {
       if (inputBodyRef.current?.value === "") message += "Body ";
       if (selectedCategory.id === 0) message += "Category ";
 
-      setResponse({ variant: "danger", message: message.trim() });
+      setAlert({ type: "danger", message: message.trim() });
       return;
     }
 
@@ -98,16 +103,17 @@ const RecipeUpload: React.FC = () => {
       .post("Recipe/uploadrecipe", recipe)
       .then((response) => {
         navigate(`/recipe/${response.data.recipe.id}`);
-        setResponse({ variant: "success", message: response.data.message });
+        setAlert({ type: "success", message: response.data.message });
         inputTitleRef.current!.value = "";
         inputBodyRef.current!.value = "";
         imageInputRef.current!.value = "";
         setSelectedCategory({ id: 0, name: "Select Category" });
       })
-      .catch((exception) => {
-        console.log(exception);
-        const { details } = exception.response.data;
-        setResponse({ variant: "danger", message: details });
+      .catch((error) => {
+        setAlert({
+          type: "danger",
+          message: error.response.data.message || "Could not add recipe.",
+        });
       });
   }, [
     selectedCategory.id,
@@ -129,7 +135,10 @@ const RecipeUpload: React.FC = () => {
         userId.current = decodedToken.nameid;
         getAllCategories();
       } catch (error) {
-        console.error("Invalid token:", error);
+        setAlert({
+          type: "danger",
+          message: "Invalid token.",
+        });
       }
     } else {
       setIsLoading(false);
@@ -172,9 +181,7 @@ const RecipeUpload: React.FC = () => {
           <NavBar />
 
           <Form className={classes.recipeFormContainer}>
-            {response && (
-              <Alert variant={response.variant}>{response.message}</Alert>
-            )}
+            {alert && <Alert variant={alert.type}>{alert.message}</Alert>}
             <Form.Group
               className={classes.recipeTitleInputContainer}
               controlId="formRecipeTitle"

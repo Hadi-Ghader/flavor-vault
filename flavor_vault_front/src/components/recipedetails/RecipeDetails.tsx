@@ -32,7 +32,7 @@ const RecipeDetails: React.FC = () => {
   );
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [alert, setAlert] = useState<{
-    variant: string;
+    type: string;
     message: string;
   } | null>(null);
 
@@ -53,7 +53,10 @@ const RecipeDetails: React.FC = () => {
             setLikesCount((prevCount) => prevCount + 1);
           })
           .catch((error) => {
-            console.log(error);
+            setAlert({
+              type: "danger",
+              message: error.response.data.message || "Could not add the like.",
+            });
           });
       } else {
         instanceJwt
@@ -65,7 +68,11 @@ const RecipeDetails: React.FC = () => {
             setLikesCount((prevCount) => prevCount - 1);
           })
           .catch((error) => {
-            console.log(error);
+            setAlert({
+              type: "danger",
+              message:
+                error.response.data.message || "Could not remove the like.",
+            });
           });
       }
     }
@@ -87,7 +94,11 @@ const RecipeDetails: React.FC = () => {
             setIsFavorite(true);
           })
           .catch((error) => {
-            console.log(error);
+            setAlert({
+              type: "danger",
+              message:
+                error.response.data.message || "Could not add to favorites.",
+            });
           });
       } else {
         instanceJwt
@@ -98,7 +109,12 @@ const RecipeDetails: React.FC = () => {
             setIsFavorite(false);
           })
           .catch((error) => {
-            console.log(error);
+            setAlert({
+              type: "danger",
+              message:
+                error.response.data.message ||
+                "Could not remove from favorites.",
+            });
           });
       }
     }
@@ -120,12 +136,15 @@ const RecipeDetails: React.FC = () => {
         .then((response) => {
           setRecipeWithLike(response.data);
           setLikesCount(response.data.likesCount);
-          setIsLoading(false);
         })
         .catch((error) => {
-          setAlert({ variant: "danger", message: `${error.response.data}` });
+          setAlert({
+            type: "danger",
+            message: error.response.data.message || "Could not get recipe.",
+          });
+        })
+        .finally(() => {
           setIsLoading(false);
-          console.log(error);
         });
 
       instanceJwt
@@ -140,7 +159,10 @@ const RecipeDetails: React.FC = () => {
           }
         })
         .catch((error) => {
-          console.log(error);
+          setAlert({
+            type: "danger",
+            message: error.response.data.message || "An error has occured.",
+          });
         });
 
       instanceJwt
@@ -155,10 +177,13 @@ const RecipeDetails: React.FC = () => {
           }
         })
         .catch((error) => {
-          console.log(error);
+          setAlert({
+            type: "danger",
+            message: error.response.data.message || "An error has occured.",
+          });
         });
     } else {
-      setAlert({ variant: "danger", message: "Invalid recipe ID" });
+      setAlert({ type: "danger", message: "Invalid recipe ID." });
       setIsLoading(false);
     }
   }, [userId, recipeId]);
@@ -177,7 +202,7 @@ const RecipeDetails: React.FC = () => {
     <div>
       <NavBar />
       <div className={classes.mainContainer}>
-        {alert && <Alert variant={alert.variant}>{alert.message}</Alert>}
+        {alert && <Alert variant={alert.type}>{alert.message}</Alert>}
         {recipeWithLike && (
           <Row className={classes.customRow}>
             <Col xs={12} sm={12} md={12} lg={6} className={classes.imageCol}>

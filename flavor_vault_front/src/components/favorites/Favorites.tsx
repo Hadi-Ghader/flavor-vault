@@ -63,7 +63,11 @@ const Favorites: React.FC = () => {
         );
       })
       .catch((error) => {
-        console.log(error);
+        setAlert({
+          type: "danger",
+          message:
+            error.response.data.message || "An unexpected error occurred",
+        });
       });
   }, []);
 
@@ -84,7 +88,10 @@ const Favorites: React.FC = () => {
           );
         })
         .catch((error) => {
-          console.log(error);
+          setAlert({
+            type: "danger",
+            message: error.response.data.message || "Could not add the like",
+          });
         });
     } else {
       instanceJwt
@@ -99,7 +106,10 @@ const Favorites: React.FC = () => {
           );
         })
         .catch((error) => {
-          console.log(error);
+          setAlert({
+            type: "danger",
+            message: error.response.data.message || "Could not remove the like",
+          });
         });
     }
   }, []);
@@ -110,10 +120,15 @@ const Favorites: React.FC = () => {
         .get(`Favorite/getUserFavoritesWithLikes?userId=${userId.current}`)
         .then((response) => {
           setUserFavorites(response.data);
-          setIsLoading(false);
         })
-        .catch((exception) => {
-          console.log(exception);
+        .catch((error) => {
+          setAlert({
+            type: "danger",
+            message:
+              error.response.data.message || "Could not get user favorites",
+          });
+        })
+        .finally(() => {
           setIsLoading(false);
         });
     } else {
@@ -129,7 +144,10 @@ const Favorites: React.FC = () => {
         userId.current = decodedToken.nameid;
         getUserFavorites();
       } catch (error) {
-        console.log("Invalid Token", error);
+        setAlert({
+          type: "danger",
+          message: "Invalid Token",
+        });
         setIsLoading(false);
       }
     } else {
@@ -187,14 +205,14 @@ const Favorites: React.FC = () => {
                           .slice(index, index + 4)
                           .map((fav, idx) => (
                             <Col
-                              key={fav.recipeId}
+                              key={`${fav.id}-${idx}`}
                               xs={12}
                               sm={6}
                               md={4}
                               lg={3}
                             >
                               <Card className={classes.card}>
-                                {imageLoading[fav.recipeId] ? (
+                                {imageLoading[fav.id] ? (
                                   <Spinner
                                     animation="border"
                                     role="status"
@@ -237,6 +255,7 @@ const Favorites: React.FC = () => {
                                   </Card.Text>
                                   <div className={classes.buttonContainer}>
                                     <OverlayTrigger
+                                      key={`like-${fav.id}-${idx}`}
                                       placement="top"
                                       overlay={
                                         <Tooltip
@@ -264,6 +283,7 @@ const Favorites: React.FC = () => {
                                     </OverlayTrigger>
 
                                     <OverlayTrigger
+                                      key={`bookmark-${fav.id}-${idx}`}
                                       placement="top"
                                       overlay={
                                         <Tooltip
@@ -286,6 +306,7 @@ const Favorites: React.FC = () => {
                                     </OverlayTrigger>
 
                                     <OverlayTrigger
+                                      key={`go-to-recipe-${fav.id}`}
                                       placement="top"
                                       overlay={
                                         <Tooltip

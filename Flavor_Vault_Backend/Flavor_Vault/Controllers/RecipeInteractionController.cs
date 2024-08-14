@@ -30,7 +30,7 @@ namespace Flavor_Vault.Controllers
             {
                 if (userId <= 0 || recipeId <= 0)
                 {
-                    return BadRequest("Invalid like data.");
+                    return BadRequest(new { Message = "Invalid like data."});
                 }
 
                 var result = await _likeService.UserHasLikedAsync(userId, recipeId);
@@ -49,7 +49,7 @@ namespace Flavor_Vault.Controllers
             {
                 if (userId <= 0)
                 {
-                    return BadRequest("Invalid like data.");
+                    return BadRequest(new { Message = "Invalid like data."});
                 }
 
                 var result = await _likeService.GetRecipesWithLikeStatusAsync(userId);
@@ -88,14 +88,14 @@ namespace Flavor_Vault.Controllers
             {
                 if (likeDTO == null || likeDTO.UserId <= 0 || likeDTO.RecipeId <= 0)
                 {
-                    return BadRequest("Invalid like data.");
+                    return BadRequest(new { Message = "Invalid like data."});
                 }
 
                 var result = await _likeService.AddLikeAsync(likeDTO);
 
                 if (!result)
                 {
-                    return Conflict("You have already liked this recipe.");
+                    return Conflict(new { Message = "You have already liked this recipe." });
                 }
 
                 return Ok("Recipe liked successfully.");
@@ -114,7 +114,7 @@ namespace Flavor_Vault.Controllers
             {
                 if (commentWithoutDTO == null || string.IsNullOrWhiteSpace(commentWithoutDTO.Body))
                 {
-                    return BadRequest("Invalid comment data.");
+                    return BadRequest(new { Message = "Invalid comment data." });
                 }
 
                 await _commentService.AddCommentAsync(commentWithoutDTO);
@@ -134,7 +134,7 @@ namespace Flavor_Vault.Controllers
             {
                 if (userId <= 0 || recipeId <= 0)
                 {
-                    return BadRequest("Invalid like data.");
+                    return BadRequest(new { Message = "Invalid like data."});
                 }
 
                 await _likeService.DeleteLikeAsync(userId, recipeId);
@@ -154,7 +154,7 @@ namespace Flavor_Vault.Controllers
             {
                 if (id <= 0)
                 {
-                    return BadRequest("Invalid comment data.");
+                    return BadRequest(new { Message = "Invalid comment data." });
                 }
 
                 await _commentService.DeleteCommentAsync(id);
@@ -175,13 +175,13 @@ namespace Flavor_Vault.Controllers
             {
                 if (ratingDto == null || ratingDto.UserId <= 0 || ratingDto.RecipeId <= 0 || ratingDto.StarsCount <= 0)
                 {
-                    return BadRequest("Invalid rating data.");
+                    return BadRequest(new { Message = "Invalid rating data." });
                 }
 
                 var success = await _ratingService.SubmitRatingAsync(ratingDto);
                 if (!success)
                 {
-                    return BadRequest("You have already rated this recipe.");
+                    return BadRequest(new { Message = "You have already rated this recipe."});
                 }
                 return Ok("Rating added successfully.");
             }

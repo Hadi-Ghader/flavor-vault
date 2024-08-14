@@ -11,7 +11,10 @@ import classes from "./Login.module.css";
 import instance from "../../helper/AxiosInstance";
 
 const Login: React.FC = () => {
-  const [alert, setAlert] = useState<string | null>(null);
+  const [alert, setAlert] = useState<{
+    type: string;
+    message: string;
+  } | null>(null);
 
   const navigate = useNavigate();
 
@@ -35,8 +38,10 @@ const Login: React.FC = () => {
           navigate("/");
         })
         .catch((error) => {
-          const { details } = error.response.data;
-          setAlert(details);
+          setAlert(
+            { type: "alert", message: error.response.data.message } ||
+              "Could not add user"
+          );
         });
     },
     [navigate]
@@ -53,12 +58,12 @@ const Login: React.FC = () => {
       let message = "Please fill out the following fields: ";
       if (email === "") message += "Email ";
       if (password === "") message += "Password ";
-      setAlert(message.trim());
+      setAlert({ type: "danger", message: message.trim() });
       return;
     }
 
     if (!emailPattern.test(email)) {
-      setAlert("Please enter a valid email address");
+      setAlert({ type: "danger", message: "Please enter a valid email" });
       return;
     }
 
@@ -88,14 +93,14 @@ const Login: React.FC = () => {
       </video>
 
       <Form className={classes.loginFormContainer}>
-        {alert && <Alert variant="danger">{alert}</Alert>}
+        {alert && <Alert variant="danger">{alert.message}</Alert>}
         <Form.Group
           className={classes.loginEmailContainer}
           controlId="formEmail"
         >
           <Form.Label
             className={
-              alert && alert.includes("Email")
+              alert && alert.message.includes("Email")
                 ? classes.loginLabelError
                 : classes.loginLabel
             }
@@ -104,7 +109,7 @@ const Login: React.FC = () => {
           </Form.Label>
           <Form.Control
             className={
-              alert && alert.includes("Email")
+              alert && alert.message.includes("Email")
                 ? classes.loginEmailError
                 : classes.loginEmailnput
             }
@@ -120,7 +125,7 @@ const Login: React.FC = () => {
         >
           <Form.Label
             className={
-              alert && alert.includes("Password")
+              alert && alert.message.includes("Password")
                 ? classes.loginLabelError
                 : classes.loginLabel
             }
@@ -129,7 +134,7 @@ const Login: React.FC = () => {
           </Form.Label>
           <Form.Control
             className={
-              alert && alert.includes("Password")
+              alert && alert.message.includes("Password")
                 ? classes.loginPasswordError
                 : classes.loginPasswordInput
             }
