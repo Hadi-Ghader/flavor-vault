@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  margin-top: 15rem;
 }
 
 .imageCol {
@@ -12,17 +11,17 @@
 }
 
 .imageContainer {
-  max-width: 60rem;
+  width: 20rem;
   margin-left: 2rem;
-  height: 100%;
+  height: 40rem;
   border-radius: 0.625rem 0 0 0.625rem;
   box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.3);
   background-color: var(--accent-color);
 }
 
 .image {
-  width: 100%;
-  height: 100%;
+  width: 20rem;
+  height: 40rem;
   object-fit: cover;
   border-radius: 0.625rem 0 0 0.625rem;
 }
@@ -36,26 +35,33 @@
 
 .contentContainer {
   padding: 1.25rem;
+  height: 40rem;
   margin-right: 2rem;
   background-color: var(--accent-color);
   border-radius: 0 0.625rem 0.625rem 0;
   color: var(--side-color);
   box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.3);
+  overflow-y: auto;
 }
 
 .recipeTitle {
-  color: var(--main-green);
+  color: var(--side-color);
   margin-bottom: 1.25rem;
 }
 
 .recipeBody {
-  color: var(--main-green);
+  color: var(--side-color);
   margin-bottom: 1.25rem;
+  font-size: 1.2rem;
 }
 
 .buttonContainer {
   display: flex;
   gap: 0.625rem;
+}
+
+.customRow {
+  width: 70rem;
 }
 
 @media (min-width: 992px) {

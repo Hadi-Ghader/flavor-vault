@@ -37,6 +37,7 @@ const LandingPage: React.FC = () => {
   const userId = useRef<number | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [imageLoading, setImageLoading] = useState<{ [key: number]: boolean }>(
     {}
   );
@@ -243,11 +244,13 @@ const LandingPage: React.FC = () => {
   useEffect(() => {
     const token = secureLocalStorage.getItem("token") as string;
     if (typeof token === "string") {
+      setIsDisabled(false);
       const decodedToken: UserToken = jwtDecode(token);
       userId.current = decodedToken.nameid;
       getAllRecipesWithUserInteraction(userId.current);
     } else {
       setIsLoading(false);
+      setIsDisabled(true);
       getAllRecipesWithUserInteraction(null);
     }
   }, [getAllRecipesWithUserInteraction]);
@@ -306,7 +309,9 @@ const LandingPage: React.FC = () => {
                             />
                           )}
                           <Card.Body className={classes.cardBody}>
-                            <Card.Title>{res.title}</Card.Title>
+                            <Card.Title className={classes.cardTitle}>
+                              {res.title}
+                            </Card.Title>
                             <Card.Text className={classes.cardText}>
                               {res.body.length > 3 ? (
                                 <div>
@@ -412,7 +417,9 @@ const LandingPage: React.FC = () => {
                           )}
 
                           <Card.Body className={classes.cardBody}>
-                            <Card.Title>{rec.title}</Card.Title>
+                            <Card.Title className={classes.cardTitle}>
+                              {rec.title}
+                            </Card.Title>
                             <Card.Text className={classes.cardText}>
                               {rec.body.length > 3 ? (
                                 <div>
@@ -446,6 +453,7 @@ const LandingPage: React.FC = () => {
                                 }
                               >
                                 <Button
+                                  disabled={isDisabled}
                                   onClick={() => {
                                     handleLikeButton(
                                       rec.userId!,
@@ -471,6 +479,7 @@ const LandingPage: React.FC = () => {
                                 }
                               >
                                 <Button
+                                  disabled={isDisabled}
                                   onClick={() => {
                                     handleFavoritesButton(
                                       rec.userId!,

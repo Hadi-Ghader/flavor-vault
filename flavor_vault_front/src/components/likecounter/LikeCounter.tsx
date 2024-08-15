@@ -4,7 +4,7 @@ type LikeCounterProps = {
 
 const LikeCounter: React.FC<LikeCounterProps> = ({ likesCount }) => {
   return (
-    <span style={{ color: "var(--main-green)" }}>Likes: {likesCount}</span>
+    <span style={{ color: "var(--side-color)" }}>Likes: {likesCount}</span>
   );
 };
 

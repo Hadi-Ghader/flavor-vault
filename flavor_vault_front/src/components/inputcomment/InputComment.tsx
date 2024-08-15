@@ -75,6 +75,16 @@ const InputComment: React.FC = () => {
     }
   }, [inputCommentRef, recipeId]);
 
+  const handleSubmitKey = useCallback(
+    (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        handleSubmitComment();
+      }
+    },
+    [handleSubmitComment]
+  );
+
   return (
     <div className={classes.commentInputContainer}>
       {tokenExists ? (
@@ -87,6 +97,7 @@ const InputComment: React.FC = () => {
             className={classes.commentInput}
             placeholder="Write your comment here..."
             ref={inputCommentRef}
+            onKeyDown={handleSubmitKey}
           />
           <button
             className={classes.commentButton}
@@ -95,11 +106,7 @@ const InputComment: React.FC = () => {
             Submit
           </button>
         </>
-      ) : (
-        <p className={classes.signInPrompt}>
-          Please sign in to be able to comment.
-        </p>
-      )}
+      ) : null}
 
       <ToastContainer position="top-end" className="p-3">
         <Toast

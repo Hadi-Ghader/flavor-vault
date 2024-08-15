@@ -5,17 +5,26 @@ import classes from "./LikeButton.module.css";
 
 interface LikeButtonProps {
   isLiked: boolean;
+  isDisabled: boolean;
   onClick: () => void;
 }
 
-const LikeButton: React.FC<LikeButtonProps> = ({ isLiked, onClick }) => (
+const LikeButton: React.FC<LikeButtonProps> = ({
+  isLiked,
+  isDisabled,
+  onClick,
+}) => (
   <OverlayTrigger
     placement="top"
     overlay={
       <Tooltip id={`tooltip-like`}>{isLiked ? "Unlike" : "Like"}</Tooltip>
     }
   >
-    <Button onClick={onClick} className={classes.likeButton}>
+    <Button
+      disabled={isDisabled}
+      onClick={onClick}
+      className={classes.likeButton}
+    >
       {isLiked ? <FaHeart /> : <FaRegHeart />}
     </Button>
   </OverlayTrigger>

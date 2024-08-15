@@ -5,11 +5,13 @@ import classes from "./FavoriteButton.module.css";
 
 interface FavoriteButtonProps {
   isFavorite: boolean;
+  isDisabled: boolean;
   onClick: () => void;
 }
 
 const FavoriteButton: React.FC<FavoriteButtonProps> = ({
   isFavorite,
+  isDisabled,
   onClick,
 }) => {
   return (
@@ -21,7 +23,11 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({
         </Tooltip>
       }
     >
-      <Button onClick={onClick} className={classes.favoriteButton}>
+      <Button
+        disabled={isDisabled}
+        onClick={onClick}
+        className={classes.favoriteButton}
+      >
         {isFavorite ? <FaBookmark /> : <FaRegBookmark />}
       </Button>
     </OverlayTrigger>

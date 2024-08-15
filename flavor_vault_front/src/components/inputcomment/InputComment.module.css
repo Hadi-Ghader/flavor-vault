@@ -6,7 +6,7 @@
 
 .commentLabel {
   font-size: 1rem;
-  color: var(--main-green);
+  color: var(--side-color);
   margin-bottom: 0.5rem;
 }
 
@@ -24,6 +24,10 @@
 
 .commentInput:focus {
   border-color: var(--side-color);
+}
+
+.commentInput::placeholder {
+  color: var(--side-color);
 }
 
 .commentButton {

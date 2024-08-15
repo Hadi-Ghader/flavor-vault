@@ -16,12 +16,15 @@ namespace Flavor_Vault.Infrastructure.Repositories
 
         private IDbConnection Connection => new NpgsqlConnection(_connectionString);
 
-        public async Task<int> GetTotalCommentsCountAsync()
+        public async Task<int> GetTotalCommentsCountAsync(int recipeId)
         {
             using var dbConnection = Connection;
-            const string countQuery = @"SELECT COUNT(*) FROM public.""comments"";";
+            const string query = @"SELECT COUNT(*) FROM public.""comments"" WHERE recipe_id = @RecipeId;";
 
-            return await dbConnection.ExecuteScalarAsync<int>(countQuery);
+            return await dbConnection.ExecuteScalarAsync<int>(query, new 
+            {
+                RecipeId = recipeId
+            });
         }
 
         public async Task<IEnumerable<CommentsWithUser>> GetPaginatedCommentsAsync(int recipeId, int page, int pageSize)

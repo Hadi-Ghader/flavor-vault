@@ -84,6 +84,11 @@
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5);
 }
 
+.recipeButton:disabled {
+  background-color: var(--side-color) !important;
+  color: var(--main-green);
+}
+
 .noResultText {
   color: var(--main-green);
   font-size: 3rem;
@@ -94,14 +99,20 @@
   margin-top: 2rem;
 }
 
+.cardTitle {
+  font-weight: bold;
+  color: var(--side-color);
+}
+
 .cardText {
   overflow: hidden;
   position: relative;
+  color: var(--side-color);
 }
 
 .ellipsis {
   display: block;
-  color: var(--main-green);
+  color: var(--side-color);
   font-weight: bold;
 }
 

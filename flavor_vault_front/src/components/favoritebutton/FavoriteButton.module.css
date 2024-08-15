@@ -16,3 +16,8 @@
   color: var(--side-color);
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.5);
 }
+
+.favoriteButton:disabled {
+  background-color: var(--side-color) !important;
+  color: var(--main-green);
+}

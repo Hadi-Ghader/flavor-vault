@@ -8,6 +8,7 @@ import instanceJwt from "../../helper/AxiosInstanceJWT";
 import { Toast, ToastContainer } from "react-bootstrap";
 
 import classes from "./RatingSection.module.css";
+import instance from "../../helper/AxiosInstance";
 
 interface RatingProps {
   recipeId: number;
@@ -37,15 +38,9 @@ const RatingSection: React.FC<RatingProps> = ({
       .then((response) => {
         setRating(response.data);
       })
-      .catch((error) => {
-        setToast({
-          show: true,
-          message: error.response.data.message || "Failed to get rating.",
-          variant: "error",
-        });
-      });
+      .catch((error) => {});
 
-    instanceJwt
+    instance
       .get(`RecipeInteraction/averageRating?recipeId=${recipeId}`)
       .then((response) => {
         setAverageRating(response.data);

@@ -25,6 +25,7 @@ const RecipeDetails: React.FC = () => {
   const userId = useRef<number | null>(null);
   const recipeIdNumber = Number(recipeId);
   const [likesCount, setLikesCount] = useState<number>(0);
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [recipeWithLike, setRecipeWithLike] = useState<RecipeWithLikes | null>(
@@ -123,11 +124,13 @@ const RecipeDetails: React.FC = () => {
   useEffect(() => {
     const token = secureLocalStorage.getItem("token") as string;
     try {
+      setIsDisabled(false);
       const decodedToken: UserToken = jwtDecode(token);
       userId.current = decodedToken.nameid;
     } catch (error) {
       console.log("Invalid Token", error);
       setIsLoading(false);
+      setIsDisabled(true);
     }
 
     if (recipeId) {
@@ -161,7 +164,9 @@ const RecipeDetails: React.FC = () => {
         .catch((error) => {
           setAlert({
             type: "danger",
-            message: error.response.data.message || "An error has occured.",
+            message:
+              error.response.data.message ||
+              "Please sign in to be able to like, add to favorite, comment, or rate.",
           });
         });
 
@@ -177,9 +182,12 @@ const RecipeDetails: React.FC = () => {
           }
         })
         .catch((error) => {
+          console.log(error);
           setAlert({
             type: "danger",
-            message: error.response.data.message || "An error has occured.",
+            message:
+              error.response.data.message ||
+              "Please sign in to be able to like, add to favorite, comment, or rate.",
           });
         });
     } else {
@@ -231,25 +239,26 @@ const RecipeDetails: React.FC = () => {
                 <CommentSection />
                 <LikeCounter likesCount={likesCount} />
                 <div className={classes.buttonContainer}>
-                  <LikeButton isLiked={isLiked} onClick={handleLikeButton} />
+                  <LikeButton
+                    isDisabled={isDisabled}
+                    isLiked={isLiked}
+                    onClick={handleLikeButton}
+                  />
                   <FavoriteButton
                     isFavorite={isFavorite}
                     onClick={handleFavoriteButton}
+                    isDisabled={isDisabled}
                   />
                   <RatingSection
                     recipeId={recipeIdNumber}
                     userId={userId.current!}
                   />
                 </div>
+                <InputComment />
               </div>
             </Col>
           </Row>
         )}
-        <Row>
-          <Col>
-            <InputComment />
-          </Col>
-        </Row>
       </div>
     </div>
   );

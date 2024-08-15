@@ -21,6 +21,7 @@ import classes from "./CommentsSection.module.css";
 import { CommentsWithUser } from "../../models/CommentsWithUser";
 import { UserToken } from "../../models/UserToken";
 import { useParams } from "react-router-dom";
+import instance from "../../helper/AxiosInstance";
 
 const CommentSection: React.FC = () => {
   const { recipeId } = useParams<{ recipeId: string }>();
@@ -66,11 +67,12 @@ const CommentSection: React.FC = () => {
 
     if (typeof recipeId === "string") {
       const rId = parseInt(recipeId);
-      instanceJwt
+      instance
         .get(
           `RecipeInteraction/getComments?recipeId=${rId}&page=${currentPage}&pageSize=${commentsPerPage}`
         )
         .then((response) => {
+          console.log(response);
           if (response.data && Array.isArray(response.data.comments)) {
             setComments(response.data.comments);
             setTotalComments(response.data.totalCount);
@@ -130,8 +132,8 @@ const CommentSection: React.FC = () => {
       {alert && <Alert variant={alert.type}>{alert.message}</Alert>}
       {comments.length > 0 ? (
         comments.map((comment) => (
-          <div key={comment.id}>
-            <h5>{comment.name}</h5>
+          <div key={comment.id} className={classes.commentsContainer}>
+            <h5 className={classes.commentTitle}>{comment.name}</h5>
             <p className={classes.commentBody}>
               {comment.body}{" "}
               <span>
@@ -157,7 +159,7 @@ const CommentSection: React.FC = () => {
       ) : (
         <p>No comments available.</p>
       )}
-      {totalComments > commentsPerPage && (
+      {comments.length > 0 && totalComments > commentsPerPage && (
         <Pagination className={classes.paginationContainer}>
           {Array.from(
             { length: Math.ceil(totalComments / commentsPerPage) },

@@ -19,7 +19,7 @@ namespace Flavor_Vault.Application.Services
         public async Task<(IEnumerable<CommentsWithUserDTO> Comments, int TotalCount)> GetPaginatedCommentsAsync(int recipeId, int page, int pageSize)
         {
             var commentsWithUser = await _commentRepository.GetPaginatedCommentsAsync(recipeId, page, pageSize);
-            var totalCount = await _commentRepository.GetTotalCommentsCountAsync();
+            var totalCount = await _commentRepository.GetTotalCommentsCountAsync(recipeId);
 
             var commentsWithUserDTO = _mapper.Map<IEnumerable<CommentsWithUserDTO>>(commentsWithUser);
 

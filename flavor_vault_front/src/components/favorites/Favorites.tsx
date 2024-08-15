@@ -29,6 +29,7 @@ import { Like } from "../../models/Like";
 
 const Favorites: React.FC = () => {
   const userId = useRef<number | null>(null);
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [imageLoading, setImageLoading] = useState<{ [key: number]: boolean }>(
     {}
   );
@@ -140,10 +141,12 @@ const Favorites: React.FC = () => {
     const token = secureLocalStorage.getItem("token") as string;
     if (typeof token === "string") {
       try {
+        setIsDisabled(false);
         const decodedToken: UserToken = jwtDecode(token);
         userId.current = decodedToken.nameid;
         getUserFavorites();
       } catch (error) {
+        setIsDisabled(true);
         setAlert({
           type: "danger",
           message: "Invalid Token",
@@ -228,7 +231,9 @@ const Favorites: React.FC = () => {
                                 )}
 
                                 <Card.Body className={classes.cardBody}>
-                                  <Card.Title>{fav.title}</Card.Title>
+                                  <Card.Title className={classes.cardTitle}>
+                                    {fav.title}
+                                  </Card.Title>
                                   <Card.Text className={classes.cardText}>
                                     {fav.body.length > 3 ? (
                                       <div>
@@ -266,6 +271,7 @@ const Favorites: React.FC = () => {
                                       }
                                     >
                                       <Button
+                                        disabled={isDisabled}
                                         onClick={() => {
                                           handleLikeButton(
                                             fav.recipeId,
@@ -294,6 +300,7 @@ const Favorites: React.FC = () => {
                                       }
                                     >
                                       <Button
+                                        disabled={isDisabled}
                                         onClick={() => {
                                           handleRemoveFromFavoritesButton(
                                             fav.recipeId
