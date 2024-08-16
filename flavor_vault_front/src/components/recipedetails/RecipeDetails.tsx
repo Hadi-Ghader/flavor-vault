@@ -16,13 +16,16 @@ import LikeCounter from "../likecounter/LikeCounter";
 import LikeButton from "../likebutton/LikeButton";
 import { Favorite } from "../../models/Favorite";
 import FavoriteButton from "../favoritebutton/FavoriteButton";
-import CommentSection from "../commentssection/CommentsSection";
-import InputComment from "../inputcomment/InputComment";
+import CommentSection, {
+  CommentSectionHandle,
+} from "../commentssection/CommentsSection";
 import RatingSection from "../ratingsection/RatingSection";
+import InputComment from "../inputcomment/InputComment";
 
 const RecipeDetails: React.FC = () => {
   const { recipeId } = useParams<{ recipeId: string }>();
   const userId = useRef<number | null>(null);
+  const commentSectionRef = useRef<CommentSectionHandle>(null);
   const recipeIdNumber = Number(recipeId);
   const [likesCount, setLikesCount] = useState<number>(0);
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -128,7 +131,7 @@ const RecipeDetails: React.FC = () => {
       const decodedToken: UserToken = jwtDecode(token);
       userId.current = decodedToken.nameid;
     } catch (error) {
-      console.log("Invalid Token", error);
+      setAlert({ type: "danger", message: "Invalid Token." });
       setIsLoading(false);
       setIsDisabled(true);
     }
@@ -182,7 +185,6 @@ const RecipeDetails: React.FC = () => {
           }
         })
         .catch((error) => {
-          console.log(error);
           setAlert({
             type: "danger",
             message:
@@ -236,7 +238,7 @@ const RecipeDetails: React.FC = () => {
                     </span>
                   ))}
                 </div>
-                <CommentSection />
+                <CommentSection ref={commentSectionRef} />
                 <LikeCounter likesCount={likesCount} />
                 <div className={classes.buttonContainer}>
                   <LikeButton
@@ -254,7 +256,7 @@ const RecipeDetails: React.FC = () => {
                     userId={userId.current!}
                   />
                 </div>
-                <InputComment />
+                <InputComment commentSectionRef={commentSectionRef} />
               </div>
             </Col>
           </Row>

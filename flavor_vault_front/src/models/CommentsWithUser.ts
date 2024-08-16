@@ -1,7 +1,7 @@
 export interface CommentsWithUser {
-    id: number,
+    id?: number,
     body: string,
-    userId: number,
-    recipeId: number,
+    userId?: number | null,
+    recipeId?: number,
     name: string
 }

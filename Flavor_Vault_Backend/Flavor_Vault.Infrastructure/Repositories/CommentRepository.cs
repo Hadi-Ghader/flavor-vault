@@ -35,7 +35,7 @@ namespace Flavor_Vault.Infrastructure.Repositories
                                     FROM public.""comments"" c
                                     JOIN users u ON u.id =  c.user_id
                                     WHERE c.recipe_id = @RecipeId
-                                    ORDER BY c.id
+                                    ORDER BY c.created_at DESC
                                     OFFSET @Offset LIMIT @Limit;";
 
             var commentsWithUser = await dbconnection.QueryAsync<CommentsWithUser>(query, new

@@ -241,6 +241,13 @@ const LandingPage: React.FC = () => {
     showModal(false);
   }, []);
 
+  const handleCardClick = useCallback(
+    (recipeId: number) => {
+      navigate(`/recipe/${recipeId}`);
+    },
+    [navigate]
+  );
+
   useEffect(() => {
     const token = secureLocalStorage.getItem("token") as string;
     if (typeof token === "string") {
@@ -293,7 +300,10 @@ const LandingPage: React.FC = () => {
                         md={6}
                         lg={3}
                       >
-                        <Card className={classes.card}>
+                        <Card
+                          className={classes.card}
+                          onClick={() => handleCardClick(res.id!)}
+                        >
                           {imageLoading[res.id!] ? (
                             <Spinner
                               animation="border"
@@ -314,7 +324,7 @@ const LandingPage: React.FC = () => {
                             </Card.Title>
                             <Card.Text className={classes.cardText}>
                               {res.body.length > 3 ? (
-                                <div>
+                                <>
                                   {res.body.slice(0, 3).map((item, index) => (
                                     <span key={index}>
                                       {item}
@@ -324,7 +334,7 @@ const LandingPage: React.FC = () => {
                                   <span className={classes.ellipsis}>
                                     ...more
                                   </span>
-                                </div>
+                                </>
                               ) : (
                                 res.body.map((item, index) => (
                                   <span key={index}>
@@ -400,7 +410,10 @@ const LandingPage: React.FC = () => {
                   <Row key={index} className="mb-4">
                     {recipes.slice(index, index + 4).map((rec, idx) => (
                       <Col key={rec.id} xs={12} sm={6} md={4} lg={3}>
-                        <Card className={classes.card}>
+                        <Card
+                          className={classes.card}
+                          onClick={() => handleCardClick(rec.id!)}
+                        >
                           {imageLoading[rec.id!] ? (
                             <Spinner
                               animation="border"
@@ -422,7 +435,7 @@ const LandingPage: React.FC = () => {
                             </Card.Title>
                             <Card.Text className={classes.cardText}>
                               {rec.body.length > 3 ? (
-                                <div>
+                                <>
                                   {rec.body.slice(0, 3).map((item, index) => (
                                     <span key={index}>
                                       {item}
@@ -432,7 +445,7 @@ const LandingPage: React.FC = () => {
                                   <span className={classes.ellipsis}>
                                     ...more
                                   </span>
-                                </div>
+                                </>
                               ) : (
                                 rec.body.map((item, index) => (
                                   <span key={index}>

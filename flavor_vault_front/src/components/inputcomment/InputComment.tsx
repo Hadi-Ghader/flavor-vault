@@ -1,19 +1,20 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-
 import secureLocalStorage from "react-secure-storage";
 import { jwtDecode } from "jwt-decode";
-
 import { Toast, ToastContainer } from "react-bootstrap";
 import classes from "./InputComment.module.css";
-
 import { UserToken } from "../../models/UserToken";
 import { CommentModel } from "../../models/CommentModel";
 import instanceJwt from "../../helper/AxiosInstanceJWT";
+import { CommentSectionHandle } from "../commentssection/CommentsSection";
 
-const InputComment: React.FC = () => {
+interface InputCommentProps {
+  commentSectionRef: React.RefObject<CommentSectionHandle>;
+}
+
+const InputComment: React.FC<InputCommentProps> = ({ commentSectionRef }) => {
   const { recipeId } = useParams<{ recipeId: string }>();
-
   const [tokenExists, setTokenExists] = useState<boolean>(false);
   const [toast, setToast] = useState<{
     show: boolean;
@@ -41,39 +42,37 @@ const InputComment: React.FC = () => {
   }, []);
 
   const handleSubmitComment = useCallback(() => {
-    if (recipeId) {
+    if (recipeId && inputCommentRef.current) {
       const id = parseInt(recipeId);
+      const commentBody = inputCommentRef.current.value;
 
-      if (inputCommentRef.current) {
-        const commentBody = inputCommentRef.current.value;
+      let comment: CommentModel = {
+        body: commentBody,
+        userId: userId.current!,
+        recipeId: id,
+      };
 
-        let comment: CommentModel = {
-          body: commentBody,
-          userId: userId.current,
-          recipeId: id,
-        };
+      commentSectionRef.current?.addComment(commentBody);
 
-        instanceJwt
-          .post(`RecipeInteraction/addComment`, comment)
-          .then((response) => {
-            setToast({
-              show: true,
-              message: "Comment added successfully!",
-              variant: "success",
-            });
-            inputCommentRef.current!.value = "";
-          })
-          .catch((error) => {
-            setToast({
-              show: true,
-              message: "There was an error adding your comment.",
-              variant: "error",
-            });
-            console.log(error);
+      instanceJwt
+        .post(`RecipeInteraction/addComment`, comment)
+        .then(() => {
+          setToast({
+            show: true,
+            message: "Comment added successfully!",
+            variant: "success",
           });
-      }
+          inputCommentRef.current!.value = "";
+        })
+        .catch(() => {
+          setToast({
+            show: true,
+            message: "There was an error adding your comment.",
+            variant: "error",
+          });
+        });
     }
-  }, [inputCommentRef, recipeId]);
+  }, [recipeId, commentSectionRef]);
 
   const handleSubmitKey = useCallback(
     (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -122,10 +121,7 @@ const InputComment: React.FC = () => {
         >
           <Toast.Body
             style={{
-              color:
-                toast.variant === "success"
-                  ? "var(--side-color)"
-                  : "var(--side-color)",
+              color: "var(--side-color)",
             }}
           >
             {toast.message}

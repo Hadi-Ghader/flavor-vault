@@ -162,6 +162,13 @@ const Favorites: React.FC = () => {
     }
   }, [getUserFavorites]);
 
+  const handleCardClick = useCallback(
+    (recipeId: number) => {
+      navigate(`/recipe/${recipeId}`);
+    },
+    [navigate]
+  );
+
   if (isLoading) {
     return (
       <Spinner
@@ -214,7 +221,10 @@ const Favorites: React.FC = () => {
                               md={4}
                               lg={3}
                             >
-                              <Card className={classes.card}>
+                              <Card
+                                className={classes.card}
+                                onClick={() => handleCardClick(fav.recipeId!)}
+                              >
                                 {imageLoading[fav.id] ? (
                                   <Spinner
                                     animation="border"

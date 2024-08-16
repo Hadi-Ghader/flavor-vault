@@ -1,4 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 
 import instanceJwt from "../../helper/AxiosInstanceJWT";
 import secureLocalStorage from "react-secure-storage";
@@ -23,7 +30,11 @@ import { UserToken } from "../../models/UserToken";
 import { useParams } from "react-router-dom";
 import instance from "../../helper/AxiosInstance";
 
-const CommentSection: React.FC = () => {
+export interface CommentSectionHandle {
+  addComment: (commentBody: string) => void;
+}
+
+const CommentSection = forwardRef<CommentSectionHandle>((_, ref) => {
   const { recipeId } = useParams<{ recipeId: string }>();
   const [comments, setComments] = useState<CommentsWithUser[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -72,7 +83,6 @@ const CommentSection: React.FC = () => {
           `RecipeInteraction/getComments?recipeId=${rId}&page=${currentPage}&pageSize=${commentsPerPage}`
         )
         .then((response) => {
-          console.log(response);
           if (response.data && Array.isArray(response.data.comments)) {
             setComments(response.data.comments);
             setTotalComments(response.data.totalCount);
@@ -121,6 +131,33 @@ const CommentSection: React.FC = () => {
       });
   }, []);
 
+  const addComment = (commentBody: string) => {
+    const token = secureLocalStorage.getItem("token") as string;
+    if (typeof token === "string") {
+      const decodedToken: UserToken = jwtDecode(token);
+      if (typeof recipeId === "string") {
+        const rId = parseInt(recipeId);
+        const newComment: CommentsWithUser = {
+          body: commentBody,
+          userId: userId.current,
+          recipeId: rId,
+          name: decodedToken.unique_name,
+        };
+        setComments((prev) => {
+          if (prev.length >= commentsPerPage) {
+            return [newComment, ...prev.slice(0, commentsPerPage - 1)];
+          } else {
+            return [...prev, newComment];
+          }
+        });
+      }
+    }
+  };
+
+  useImperativeHandle(ref, () => ({
+    addComment,
+  }));
+
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   if (isLoading) {
@@ -145,7 +182,7 @@ const CommentSection: React.FC = () => {
                     }
                   >
                     <Button
-                      onClick={() => handleDeleteButton(comment.id)}
+                      onClick={() => handleDeleteButton(comment.id!)}
                       className={classes.deleteButton}
                     >
                       <MdDelete />
@@ -189,6 +226,6 @@ const CommentSection: React.FC = () => {
       </ToastContainer>
     </div>
   );
-};
+});
 
 export default CommentSection;

@@ -8,6 +8,32 @@
   padding: 1rem;
 }
 
+body::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: var(--main-green);
+  border-radius: 0.625rem;
+}
+
+body::-webkit-scrollbar-track {
+  background-color: var(--accent-color);
+}
+
+div::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+div::-webkit-scrollbar-thumb {
+  background-color: var(--main-green);
+  border-radius: 0.625rem;
+}
+
+div::-webkit-scrollbar-track {
+  background-color: var(--accent-color);
+}
+
 .heading {
   top: 0;
   display: flex;
@@ -44,6 +70,7 @@
 .card:hover {
   transform: scale(1.05);
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.7);
+  cursor: pointer;
 }
 
 .searchBar {
@@ -202,59 +229,15 @@
 }
 
 @media (max-width: 768px) {
-  .mainContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-  }
   .card {
     width: 100%;
-    margin-bottom: 2rem;
+    margin: 2rem auto;
   }
-  .searchBar {
-    width: 30rem;
-  }
-}
-
-@media (max-width: 576px) {
-  .card {
+  .modalContainer {
     width: 100%;
+    margin: 2rem auto;
   }
   .searchBar {
     width: 20rem;
-  }
-  .mainContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-  }
-  .modalContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    margin: 5rem;
-  }
-}
-
-@media (max-width: 568px) {
-  .card {
-    width: 100%;
-    margin-bottom: 2rem;
-  }
-  .searchBar {
-    width: 15rem;
-  }
-  .cardsContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .mainContainer {
-    display: flex !important;
-    flex-direction: column;
-    align-items: center;
   }
 }
