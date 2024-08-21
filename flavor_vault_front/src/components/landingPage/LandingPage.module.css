@@ -6,6 +6,7 @@
   justify-content: flex-start;
   align-items: center;
   padding: 1rem;
+  backface-visibility: hidden;
 }
 
 body::-webkit-scrollbar {
@@ -176,6 +177,7 @@ div::-webkit-scrollbar-track {
   overflow: hidden;
   position: relative;
   color: var(--side-color);
+  font-size: 1rem;
 }
 
 .ellipsis {
@@ -221,6 +223,11 @@ div::-webkit-scrollbar-track {
     align-items: center;
     justify-content: flex-start;
   }
+
+  .cardText {
+    font-size: 0.9rem;
+  }
+
   .card {
     width: 100%;
     margin-right: 2rem;
@@ -228,10 +235,18 @@ div::-webkit-scrollbar-track {
   }
 }
 
+@media (max-width: 1200px) {
+  .cardText {
+    font-size: 0.8rem;
+  }
+}
 @media (max-width: 768px) {
   .card {
     width: 100%;
     margin: 2rem auto;
+  }
+  .cardText {
+    font-size: 0.7rem;
   }
   .modalContainer {
     width: 100%;

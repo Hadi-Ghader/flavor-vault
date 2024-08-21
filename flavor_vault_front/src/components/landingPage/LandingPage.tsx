@@ -135,10 +135,10 @@ const LandingPage: React.FC = () => {
   );
 
   const handleFavoritesButton = useCallback(
-    (userId: number, recipeId: number, isFavorited: boolean) => {
+    (recipeId: number, isFavorited: boolean) => {
       if (!isFavorited) {
         let userFavorite: Favorite = {
-          userId: userId,
+          userId: userId.current,
           recipeId: recipeId,
         };
         instanceJwt
@@ -151,6 +151,7 @@ const LandingPage: React.FC = () => {
             );
           })
           .catch((error) => {
+            console.log(error);
             setAlert(
               { type: "alert", message: error.response.data.message } ||
                 "Could not add to favorites"
@@ -162,7 +163,7 @@ const LandingPage: React.FC = () => {
       } else {
         instanceJwt
           .delete(
-            `Favorite/removeFavorite?userId=${userId}&recipeId=${recipeId}`
+            `Favorite/removeFavorite?userId=${userId.current}&recipeId=${recipeId}`
           )
           .then((response) => {
             setRecipes((prevRecipes) =>
@@ -185,68 +186,59 @@ const LandingPage: React.FC = () => {
     []
   );
 
-  const handleLikeButton = useCallback(
-    (userId: number, recipeId: number, isLiked: boolean) => {
-      if (!isLiked) {
-        let like: Like = {
-          UserId: userId,
-          RecipeId: recipeId,
-        };
+  const handleLikeButton = useCallback((recipeId: number, isLiked: boolean) => {
+    if (!isLiked) {
+      let like: Like = {
+        UserId: userId.current,
+        RecipeId: recipeId,
+      };
 
-        instanceJwt
-          .post("RecipeInteraction/addLike", like)
-          .then((response) => {
-            setRecipes((prevRecipes) =>
-              prevRecipes.map((rec) =>
-                rec.id === recipeId ? { ...rec, isLiked: true } : rec
-              )
-            );
-          })
-          .catch((error) => {
-            setAlert(
-              { type: "alert", message: error.response.data.message } ||
-                "Could not add the like"
-            );
-          })
-          .finally(() => {
-            setIsLoading(false);
-          });
-      } else {
-        instanceJwt
-          .delete(
-            `RecipeInteraction/removeLike?userId=${userId}&recipeId=${recipeId}`
-          )
-          .then((response) => {
-            setRecipes((prevRecipes) =>
-              prevRecipes.map((rec) =>
-                rec.id === recipeId ? { ...rec, isLiked: false } : rec
-              )
-            );
-          })
-          .catch((error) => {
-            setAlert(
-              { type: "alert", message: error.response.data.message } ||
-                "Could not delete the like"
-            );
-          })
-          .finally(() => {
-            setIsLoading(false);
-          });
-      }
-    },
-    []
-  );
+      instanceJwt
+        .post("RecipeInteraction/addLike", like)
+        .then((response) => {
+          setRecipes((prevRecipes) =>
+            prevRecipes.map((rec) =>
+              rec.id === recipeId ? { ...rec, isLiked: true } : rec
+            )
+          );
+        })
+        .catch((error) => {
+          console.log(error);
+          setAlert(
+            { type: "alert", message: error.response.data.message } ||
+              "Could not add the like"
+          );
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    } else {
+      instanceJwt
+        .delete(
+          `RecipeInteraction/removeLike?userId=${userId.current}&recipeId=${recipeId}`
+        )
+        .then((response) => {
+          setRecipes((prevRecipes) =>
+            prevRecipes.map((rec) =>
+              rec.id === recipeId ? { ...rec, isLiked: false } : rec
+            )
+          );
+        })
+        .catch((error) => {
+          setAlert(
+            { type: "alert", message: error.response.data.message } ||
+              "Could not delete the like"
+          );
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, []);
 
   const handleCloseModal = useCallback(() => {
     showModal(false);
   }, []);
-
-  const handleCardClick = useCallback(
-    (recipeId: number) => {
-      navigate(`/recipe/${recipeId}`);
-    },
-    [navigate]
-  );
 
   useEffect(() => {
     const token = secureLocalStorage.getItem("token") as string;
@@ -300,10 +292,7 @@ const LandingPage: React.FC = () => {
                         md={6}
                         lg={3}
                       >
-                        <Card
-                          className={classes.card}
-                          onClick={() => handleCardClick(res.id!)}
-                        >
+                        <Card className={classes.card}>
                           {imageLoading[res.id!] ? (
                             <Spinner
                               animation="border"
@@ -323,9 +312,9 @@ const LandingPage: React.FC = () => {
                               {res.title}
                             </Card.Title>
                             <Card.Text className={classes.cardText}>
-                              {res.body.length > 3 ? (
+                              {res.body.length > 2 ? (
                                 <>
-                                  {res.body.slice(0, 3).map((item, index) => (
+                                  {res.body.slice(0, 2).map((item, index) => (
                                     <span key={index}>
                                       {item}
                                       <br />
@@ -409,11 +398,8 @@ const LandingPage: React.FC = () => {
                 return (
                   <Row key={index} className="mb-4">
                     {recipes.slice(index, index + 4).map((rec, idx) => (
-                      <Col key={rec.id} xs={12} sm={6} md={4} lg={3}>
-                        <Card
-                          className={classes.card}
-                          onClick={() => handleCardClick(rec.id!)}
-                        >
+                      <Col key={rec.id} xs={12} sm={6} md={6} lg={3}>
+                        <Card className={classes.card}>
                           {imageLoading[rec.id!] ? (
                             <Spinner
                               animation="border"
@@ -434,9 +420,9 @@ const LandingPage: React.FC = () => {
                               {rec.title}
                             </Card.Title>
                             <Card.Text className={classes.cardText}>
-                              {rec.body.length > 3 ? (
+                              {rec.body.length > 2 ? (
                                 <>
-                                  {rec.body.slice(0, 3).map((item, index) => (
+                                  {rec.body.slice(0, 2).map((item, index) => (
                                     <span key={index}>
                                       {item}
                                       <br />
@@ -468,11 +454,7 @@ const LandingPage: React.FC = () => {
                                 <Button
                                   disabled={isDisabled}
                                   onClick={() => {
-                                    handleLikeButton(
-                                      rec.userId!,
-                                      rec.id!,
-                                      rec.isLiked!
-                                    );
+                                    handleLikeButton(rec.id!, rec.isLiked!);
                                   }}
                                   className={classes.recipeButton}
                                 >
@@ -495,7 +477,6 @@ const LandingPage: React.FC = () => {
                                   disabled={isDisabled}
                                   onClick={() => {
                                     handleFavoritesButton(
-                                      rec.userId!,
                                       rec.id!,
                                       rec.isFavorited!
                                     );
@@ -543,8 +524,6 @@ const LandingPage: React.FC = () => {
           </div>
         )}
       </Container>
-
-      <h2 className={classes.heading}>All Recipes</h2>
     </div>
   );
 };

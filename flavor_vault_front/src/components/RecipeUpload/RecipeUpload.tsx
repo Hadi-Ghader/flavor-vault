@@ -110,6 +110,7 @@ const RecipeUpload: React.FC = () => {
         setSelectedCategory({ id: 0, name: "Select Category" });
       })
       .catch((error) => {
+        console.log(error);
         setAlert({
           type: "danger",
           message: error.response.data.message || "Could not add recipe.",

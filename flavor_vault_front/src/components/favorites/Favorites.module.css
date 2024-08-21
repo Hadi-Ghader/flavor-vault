@@ -6,6 +6,7 @@
   justify-content: flex-start;
   align-items: center;
   padding: 1rem;
+  backface-visibility: hidden;
 }
 
 .heading {
@@ -32,6 +33,7 @@
 .card {
   display: flex;
   flex-direction: column;
+  margin-right: 2rem;
   width: 20rem;
   max-width: 18.75rem;
   height: 25rem;
@@ -109,6 +111,7 @@
   overflow: hidden;
   position: relative;
   color: var(--side-color);
+  font-size: 0.9rem;
 }
 
 .ellipsis {
@@ -138,14 +141,30 @@
 
 @media (max-width: 1800px) {
   .card {
-    width: 100%;
-    margin-bottom: 2rem;
+    width: 95%;
+    margin: 1rem auto;
+  }
+  .cardText {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .card {
+    width: 95%;
+    margin: 1rem auto;
+  }
+  .cardText {
+    font-size: 0.8rem;
   }
 }
 
 @media (max-width: 768px) {
   .card {
-    width: 100%;
-    margin: 2rem auto;
+    width: 90%;
+    margin: 1rem auto;
+  }
+  .cardText {
+    font-size: 0.8rem;
   }
 }

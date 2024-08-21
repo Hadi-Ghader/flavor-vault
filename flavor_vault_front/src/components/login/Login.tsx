@@ -39,8 +39,8 @@ const Login: React.FC = () => {
         })
         .catch((error) => {
           setAlert(
-            { type: "alert", message: error.response.data.message } ||
-              "Could not add user"
+            { type: "alert", message: error.response.data.details } ||
+              "Could not login user"
           );
         });
     },

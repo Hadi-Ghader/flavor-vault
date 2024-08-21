@@ -88,7 +88,7 @@ namespace Flavor_Vault.Controllers
                 return Conflict(new { Message = "You have already added this recipe to your favorites." });
             }
 
-            return Ok("Recipe liked successfully.");
+            return Ok("Recipe favorited successfully.");
         }
 
         [HttpDelete("removeFavorite")]

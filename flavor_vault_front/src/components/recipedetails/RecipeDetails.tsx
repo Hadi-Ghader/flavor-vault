@@ -230,6 +230,9 @@ const RecipeDetails: React.FC = () => {
                 <h2 className={classes.recipeTitle}>
                   {recipeWithLike.recipe.title}
                 </h2>
+                <h6 className={classes.recipeTitle}>
+                  by: {recipeWithLike.recipe.userName}
+                </h6>
                 <div className={classes.recipeBody}>
                   {recipeWithLike.recipe.body.map((item, index) => (
                     <span key={index}>

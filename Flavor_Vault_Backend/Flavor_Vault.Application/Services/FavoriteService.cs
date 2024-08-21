@@ -24,9 +24,10 @@ namespace Flavor_Vault.Application.Services
 
             var userFavoritesDTOS = _mapper.Map<IEnumerable<FavoriteRecipeByUserDTO>>(userFavorites);
 
-            foreach (var userFavoritesDTO in userFavoritesDTOS)
+            foreach (var userFavoritesDTO in userFavoritesDTOS)   
             {
-                userFavoritesDTO.IsLiked = likedRecipeIds.Contains(userFavoritesDTO.Id);
+                bool isLiked = likedRecipeIds.Contains(userFavoritesDTO.RecipeId);
+                userFavoritesDTO.IsLiked = isLiked;
             }
 
             return userFavoritesDTOS;

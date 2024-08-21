@@ -40,7 +40,7 @@ namespace Flavor_Vault.Infrastructure.Repositories
                             WHERE recipe_id = @RecipeId;";
 
             var average = await dbconnection.ExecuteScalarAsync<double>(query, new { RecipeId = recipeId });
-            return average;
+            return Math.Round(average, 2);
         }
 
         public async Task<int> GetRatingByUserForRecipeAsync(int userId, int recipeId)

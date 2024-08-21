@@ -67,6 +67,12 @@ const RatingSection: React.FC<RatingProps> = ({
         .post("RecipeInteraction/addRating", ratingData)
         .then(() => {
           setRating(newRating);
+          return instance.get(
+            `RecipeInteraction/averageRating?recipeId=${recipeId}`
+          );
+        })
+        .then((response) => {
+          setAverageRating(response.data);
           setToast({
             show: true,
             message: "Rating submitted successfully!",
